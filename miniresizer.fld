@@ -1,0 +1,137 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0302 
+header_name {.hpp} 
+code_name {.cpp}
+decl {\#include "Fl_Value_Output_3Digit.hpp"} {public global
+} 
+
+widget_class ResizeWindowBase {
+  label MiniResizer open
+  private xywh {708 447 655 360} type Double
+  class Fl_Window visible
+} {
+  decl {typedef Fl_Spinner CropWidgetType;} {protected local
+  }
+  Fl_Group {} {
+    label {Input info} open
+    protected xywh {5 22 315 81} box PLASTIC_UP_FRAME align 5
+  } {
+    Fl_Value_Output mInputWidth {
+      label Width
+      protected xywh {60 32 90 25} value 720
+    }
+    Fl_Value_Output mInputHeight {
+      label Height
+      protected xywh {220 32 90 25} value 576
+    }
+    Fl_Value_Output mInputSar {
+      label SAR
+      protected xywh {60 67 90 25} value 1.25
+      class Fl_Value_Output_3Digit
+    }
+    Fl_Value_Output mInputDar {
+      label DAR
+      protected xywh {220 67 90 25} value 1.778
+      class Fl_Value_Output_3Digit
+    }
+  }
+  Fl_Group {} {
+    label {Crop Control} open
+    protected xywh {5 134 315 219} box PLASTIC_UP_FRAME align 5
+  } {
+    Fl_Value_Input mCropAlign {
+      label {Crop Align}
+      protected xywh {90 144 45 25} minimum 1 maximum 16 step 1 value 2
+    }
+    Fl_Spinner mCropTop {
+      label {Top Crop}
+      protected xywh {128 194 65 25} align 1 when 1 minimum -128 maximum 999999 step 2 value 0
+    }
+    Fl_Spinner mCropLeft {
+      label {Left Crop}
+      protected xywh {90 230 65 25} when 1 minimum -128 maximum 999999 step 2 value 0
+    }
+    Fl_Spinner mCropRight {
+      label {Right Crop}
+      protected xywh {165 230 65 25} align 8 when 1 minimum -128 maximum 999999 step 2 value 0
+    }
+    Fl_Spinner mCropBottom {
+      label {Bottom Crop}
+      protected xywh {128 265 65 25} align 2 when 1 minimum -128 maximum 999999 step 2 value 0
+    }
+    Fl_Value_Output mCroppedWidth {
+      label {After crop}
+      protected xywh {90 319 96 25}
+    }
+    Fl_Value_Output mCroppedHeight {
+      label x
+      protected xywh {201 319 109 26}
+    }
+  }
+  Fl_Group {} {
+    label {Resize Control} open
+    protected xywh {335 22 315 145} box PLASTIC_UP_FRAME align 5
+  } {
+    Fl_Choice mDarChoice {
+      label DAR open
+      protected xywh {379 34 90 25} down_box BORDER_BOX when 1
+    } {}
+    Fl_Value_Input mDar {
+      label {or type a value}
+      protected xywh {583 34 60 25} minimum 0.01 maximum 100 step 0.001 value 1.778 deactivate
+      code0 {mDar->precision(3);}
+    }
+    Fl_Value_Output mPar {
+      label PAR
+      protected xywh {379 80 60 25}
+      class Fl_Value_Output_3Digit
+    }
+    Fl_Spinner mTargetWidth {
+      label {Target Width}
+      protected xywh {573 80 70 25} when 1 minimum -128 maximum 999999 step 16 value 704
+    }
+    Fl_Value_Output mResizedWidth {
+      label {Resize to}
+      protected xywh {414 130 60 25}
+    }
+    Fl_Value_Output mResizedHeight {
+      label x
+      protected xywh {488 131 60 25}
+    }
+    Fl_Value_Output mResizeError {
+      label Err
+      protected xywh {587 130 56 25}
+      class Fl_Value_Output_3Digit
+    }
+  }
+  Fl_Group {} {
+    label Filtergraph open
+    protected xywh {335 200 315 153} box PLASTIC_UP_FRAME align 5
+  } {
+    Fl_Text_Editor mTemplate {
+      label Template
+      protected xywh {345 223 295 50} align 5
+    }
+    Fl_Text_Display mFilter {
+      label Filter
+      protected xywh {345 295 295 50} align 5
+    }
+  }
+} 
+
+widget_class PreviewWindowBase {
+  label Preview open
+  private xywh {1239 507 485 325} type Double resizable
+  class Fl_Window visible
+} {
+  Fl_Group mContainer {open
+    protected xywh {0 287 485 38} box FLAT_BOX
+  } {
+    Fl_Slider mPosition {selected
+      protected xywh {7 294 471 26} type Horizontal labeltype NO_LABEL maximum 999 step 1
+    }
+  }
+  Fl_Group {} {open
+    protected xywh {7 272 471 1} hide resizable
+  } {}
+} 

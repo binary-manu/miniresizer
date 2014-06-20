@@ -1,0 +1,8 @@
+build/
+dist/
+nbproject/
+!nbproject/configurations.xml
+!nbproject/project.xml
+miniresizer.cpp
+miniresizer.hpp
+.dep.inc
