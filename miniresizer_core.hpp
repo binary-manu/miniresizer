@@ -26,6 +26,8 @@ typedef int FrameSize;
 typedef double Ratio;
 // Type to represent positions/frame numbers
 typedef int Position;
+// Type used for colors
+typedef Fl_Color Color;
 
 typedef Exception<std::logic_error, struct MRExceptionTag> MRException;
 typedef Exception<MRException, struct MRNonSevereExceptiongTag> MRNonSevereException;
@@ -65,6 +67,8 @@ public:
 	FrameSize GetCroppedHeight() const;
 	FrameSize GetResizedWidth() const;
 	FrameSize GetResizedHeight() const;
+	Color GetBorderColor() const;
+	bool HasBorder() const;
 	void TriggerUpdate();
 		
 private:
@@ -90,6 +94,7 @@ private:
 	static void handleDARTyping(Fl_Widget *w, void *_p);
 	static void handleTargetWidthChange(Fl_Widget *w, void *_p);
 	static void handleClose(Fl_Widget *w, void *_p);
+	static void handleBorder(Fl_Widget *w, void *_p);
 	static FrameSize nearestInteger(Ratio d);
 	static FrameSize nearestMultiple(FrameSize i, FrameSize step);
 	
@@ -115,6 +120,8 @@ public:
 	void TriggerUpdate();
 	PreviewWindow& SetOnSeekListener(SeekListener *cb);
 	SeekListener *GetOnSeekListener();
+	void SetBorderColor(Color c);
+	void ClearBorder();
 private:
 	void draw();
 	
@@ -122,6 +129,10 @@ private:
 	FrameSize mPictureW;
 	FrameSize mPictureH;
 	std::vector<uint8_t> mPictureData;
+	bool mHasBorder;
+	Color mBorderColor;
+	
+	static const FrameSize BORDER_SIZE = 8;
 	
 	static void handleSlider(Fl_Widget *w, void *p);
 	static void handleClose(Fl_Widget* w, void* _p);
