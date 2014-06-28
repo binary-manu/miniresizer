@@ -134,5 +134,76 @@
       <item path="miniresizer_core.hpp" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
+    <conf name="Win32_Release" type="1">
+      <toolsSet>
+        <compilerSet>W32|GNU</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <standard>3</standard>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <standard>4</standard>
+          <incDir>
+            <pElem>/opt/cross/i686-w64-mingw32/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>WIN32</Elem>
+            <Elem>__STDC_CONSTANT_MACROS</Elem>
+          </preprocessorList>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/miniresizer.exe</output>
+          <linkerAddLib>
+            <pElem>/opt/cross/i686-w64-mingw32/lib</pElem>
+          </linkerAddLib>
+          <stripSymbols>true</stripSymbols>
+          <linkerLibItems>
+            <linkerLibLibItem>fltk</linkerLibLibItem>
+            <linkerLibLibItem>avcodec.dll</linkerLibLibItem>
+            <linkerLibLibItem>avformat.dll</linkerLibLibItem>
+            <linkerLibLibItem>avutil.dll</linkerLibLibItem>
+            <linkerLibLibItem>swscale.dll</linkerLibLibItem>
+            <linkerLibLibItem>ole32</linkerLibLibItem>
+            <linkerLibLibItem>uuid</linkerLibLibItem>
+            <linkerLibLibItem>comctl32</linkerLibLibItem>
+            <linkerOptionItem>-static</linkerOptionItem>
+          </linkerLibItems>
+          <commandLine>-mwindows</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="Fl_Value_Output_3Digit.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="miniresizer.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <additionalDep>miniresizer.fld</additionalDep>
+        </ccTool>
+      </item>
+      <item path="miniresizer.fld" ex="false" tool="3" flavor2="0">
+        <customTool>
+          <customToolCommandline>fluid -c $&lt;</customToolCommandline>
+          <customToolOutputs>miniresizer.cpp miniresizer.hpp</customToolOutputs>
+        </customTool>
+      </item>
+      <item path="miniresizer.hpp" ex="false" tool="3" flavor2="0">
+        <customTool>
+          <customToolAdditionalDep>miniresizer.fld</customToolAdditionalDep>
+        </customTool>
+      </item>
+      <item path="miniresizer_core.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="miniresizer_core.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
   </confs>
 </configurationDescriptor>
