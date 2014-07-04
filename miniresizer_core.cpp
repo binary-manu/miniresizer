@@ -466,9 +466,7 @@ void PreviewWindow::draw() {
 		}
 		fl_draw_image(&mPictureData[0], x, y, mPictureW, mPictureH);
 	}
-	if ((d & FL_DAMAGE_CHILD) || (d & FL_DAMAGE_ALL)) {
-		draw_children();
-	}
+	draw_children();
 }
 
 
