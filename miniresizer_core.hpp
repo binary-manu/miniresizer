@@ -70,7 +70,7 @@ public:
 	FrameSize GetResizedHeight() const;
 	Color GetBorderColor() const;
 	bool HasBorder() const;
-	FrameSize GetZoom() const;
+	Ratio GetZoom() const;
 	bool IsZoomEnlarging() const;
 	void TriggerUpdate();
 		

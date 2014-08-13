@@ -368,8 +368,8 @@ bool ResizeWindow::HasBorder() const {
 	return mPreviewBorder->value();
 }
 
-FrameSize ResizeWindow::GetZoom() const {
-	return FrameSize(mZoomMultiplier->value());
+Ratio ResizeWindow::GetZoom() const {
+	return mZoomMultiplier->value();
 }
 
 bool ResizeWindow::IsZoomEnlarging() const {

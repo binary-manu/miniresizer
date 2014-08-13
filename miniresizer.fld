@@ -105,20 +105,20 @@ widget_class ResizeWindowBase {
     }
   }
   Fl_Group {} {
-    label {Visual aids} open selected
+    label {Visual aids} open
     protected xywh {335 200 315 153} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Choice mPreviewBorder {
       label Border open
       protected tooltip {Shows a solid border around the preview to ease cropping} xywh {398 215 136 25} down_box BORDER_BOX
     } {}
-    Fl_Spinner mZoomMultiplier {
-      label Zoom
-      protected xywh {400 252 65 25} maximum 10
-    }
     Fl_Check_Button mZoomIn {
       label Enlarge
-      protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {490 252 80 25} down_box DOWN_BOX
+      protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {548 252 80 25} down_box DOWN_BOX
+    }
+    Fl_Value_Slider mZoomMultiplier {
+      label Zoom selected
+      protected xywh {398 252 136 25} type Horizontal align 4 minimum 1 maximum 10 step 0.1 value 1
     }
   }
 } 
