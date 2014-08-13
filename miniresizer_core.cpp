@@ -758,6 +758,7 @@ public:
 				sws_freeContext(scaler);
 			}
 			av_freep(outScale[0]);
+			throw;
 		}
 	}
 	
