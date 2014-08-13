@@ -56,6 +56,7 @@ public:
 	ResizeWindow& SetInputWidth(FrameSize inputWidth);
 	FrameSize GetInputWidth() const;
 	ResizeWindow& SetInputDar(Ratio dar);
+	ResizeWindow& SetTargetWidth(FrameSize width);
 	Ratio GetDar() const;
 	Ratio GetPar() const;
 	Ratio GetSar() const;

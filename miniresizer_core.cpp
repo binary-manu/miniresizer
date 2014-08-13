@@ -376,6 +376,10 @@ bool ResizeWindow::IsZoomEnlarging() const {
 	return mZoomIn->value();
 }
 
+ResizeWindow& ResizeWindow::SetTargetWidth(FrameSize width) {
+	mTargetWidth->value(width);
+	return *this;
+}
 
 
 
@@ -665,6 +669,8 @@ public:
 		}
 		mResize->SetOnResizeListener(this);
 		mPreview->SetOnSeekListener(this);
+		const FrameSize w = mRGB->GetFrameWidth();
+		mResize->SetTargetWidth((w) ? w : 1);
 		mPreview->TriggerUpdate();
 	}
 	
