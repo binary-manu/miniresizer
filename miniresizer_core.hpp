@@ -69,6 +69,8 @@ public:
 	FrameSize GetResizedHeight() const;
 	Color GetBorderColor() const;
 	bool HasBorder() const;
+	FrameSize GetZoom() const;
+	bool IsZoomEnlarging() const;
 	void TriggerUpdate();
 		
 private:
@@ -94,7 +96,7 @@ private:
 	static void handleDARTyping(Fl_Widget *w, void *_p);
 	static void handleTargetWidthChange(Fl_Widget *w, void *_p);
 	static void handleClose(Fl_Widget *w, void *_p);
-	static void handleBorder(Fl_Widget *w, void *_p);
+	static void genericHandler(Fl_Widget *w, void *_p);
 	static FrameSize nearestInteger(Ratio d);
 	static FrameSize nearestMultiple(FrameSize i, FrameSize step);
 	

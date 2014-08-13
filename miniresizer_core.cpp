@@ -124,7 +124,9 @@ ResizeWindow::ResizeWindow():
 	mPreviewBorder->value(0);
 	
 	mDarChoice->callback(&handleDARSelection, this);
-	mPreviewBorder->callback(&handleBorder, this);
+	mPreviewBorder->callback(&genericHandler, this);
+	mZoomMultiplier->callback(&genericHandler, this);
+	mZoomIn->callback(&genericHandler, this);
 	mDar->callback(&handleDARTyping, this);
 	mCropAlign->callback(&handleCropAlignChange, this);
 	mCropTop->callback(&handleCropTopChange, this);
@@ -289,7 +291,7 @@ void ResizeWindow::handleTargetWidthChange(Fl_Widget *w, void *_p) {
 	p->evaluate();
 }
 
-void ResizeWindow::handleBorder(Fl_Widget *w, void *_p) {
+void ResizeWindow::genericHandler(Fl_Widget *w, void *_p) {
 	ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
 	p->evaluate();
 }
@@ -364,6 +366,14 @@ Color ResizeWindow::GetBorderColor() const {
 
 bool ResizeWindow::HasBorder() const {
 	return mPreviewBorder->value();
+}
+
+FrameSize ResizeWindow::GetZoom() const {
+	return FrameSize(mZoomMultiplier->value());
+}
+
+bool ResizeWindow::IsZoomEnlarging() const {
+	return mZoomIn->value();
 }
 
 
@@ -683,8 +693,9 @@ public:
 		int outLines[4] = {0};
 		
 		try {
-			const FrameSize w = mResize->GetResizedWidth();
-			const FrameSize h = mResize->GetResizedHeight();
+			const Ratio zoomRatio = (mResize->IsZoomEnlarging()) ? mResize->GetZoom() : (1.0 / mResize->GetZoom());
+			const FrameSize w = ceil(mResize->GetResizedWidth() * zoomRatio);
+			const FrameSize h = ceil(mResize->GetResizedHeight() * zoomRatio);
 			const FrameSize croppedW = mResize->GetCroppedWidth();
 			const FrameSize croppedH = mResize->GetCroppedHeight();
 
