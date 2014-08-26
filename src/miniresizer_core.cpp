@@ -1,3 +1,4 @@
+#include <config.h>
 #include <math.h>
 #include <FL/fl_draw.H>
 #include <FL/Fl_File_Chooser.H>
@@ -5,8 +6,6 @@
 #include <iostream>
 #include "miniresizer.hpp"	// For the GUI
 #include "miniresizer_core.hpp"
-#include "version.h"
-
 
 ResizeWindow& ResizeWindow::SetInputHeight(FrameSize inputHeight) {
 	if (inputHeight <= 0) {
@@ -109,7 +108,7 @@ ResizeWindow::~ResizeWindow() {
 ResizeWindow::ResizeWindow():
 	mOnResize(0)
 {
-	label((std::string(label()) + " " + VERSION_STRING).c_str());
+	label(PACKAGE_STRING);
 	
 	callback(handleClose, this);
 	mDarChoice->add("As input");
@@ -768,9 +767,7 @@ private:
 	PreviewWindow *mPreview;
 };
 
-int main(int argc, char **argv) {
-	std::cout << APP_VERSIONED_NAME << std::endl;
-	
+int main(int argc, char **argv) {	
 	av_register_all();
 	Fl::visual(FL_RGB);
 	

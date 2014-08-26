@@ -1,0 +1,19 @@
+MiniResizer 0.0.4
+   * Instrumented for the GNU Build System
+
+MiniResizer 0.0.3
+    * Move preview border settings under a dedicated "visual aids" section
+    * Add controls for enlarging or shrinking the preview, to ease working on
+      high-res material on small screens
+
+MiniResizer 0.0.2
+    * Never released
+    * Fix redraw problems for the controls in the preview window
+      (only under MS Windows) (issue #2)
+
+MiniResizer 0.0.1
+    * Never released
+    * Add the solid borer around the preview as a visual aid (issue #3)
+
+MiniResizer 0.0.0
+    * Never released

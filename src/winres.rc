@@ -1,0 +1,5 @@
+#include <windows.h>
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+appIcon ICON "resize.ico"

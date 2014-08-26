@@ -1,0 +1,6 @@
+MiniResizer is a simple graphical utility that helps you to calculate crop and
+resize parameters when doing video editing.
+
+Its goal is to show you a preview of how a picture will look after being resized
+so that you can visually check if your choices actually remove all the black
+borders or if the aspect ratio is correct.

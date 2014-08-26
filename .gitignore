@@ -6,3 +6,13 @@ nbproject/
 miniresizer.cpp
 miniresizer.hpp
 .dep.inc
+config/
+autom4te.cache/
+aclocal.m4
+configure
+Makefile.in
+src/Makefile.in
+Makefile
+src/Makefile
+config.h.in
+config.h
