@@ -4,6 +4,7 @@ miniresizer_SOURCES = Fl_Value_Output_3Digit.hpp miniresizer_core.cpp \
 nodist_miniresizer_SOURCES = miniresizer.cpp miniresizer.hpp
 BUILT_SOURCES =  miniresizer.cpp miniresizer.hpp
 EXTRA_miniresizer_SOURCES = winres.rc
+EXTRA_DIST = resize.ico
 CLEANFILES = miniresizer.cpp miniresizer.hpp
 AM_CPPFLAGS = -D__STDC_CONSTANT_MACROS
 AM_LDFLAGS =
