@@ -4,7 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([MiniResizer], [0.0.4])
 AC_CONFIG_AUX_DIR([config])
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign -Wportability])
 
 AC_CONFIG_SRCDIR([src/miniresizer_core.cpp])
 AC_CONFIG_HEADERS([config.h])

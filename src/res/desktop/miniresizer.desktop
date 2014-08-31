@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=MiniResizer
+Icon=miniresizer
+GenericName=Video resize helper
+GenericName[it]=Strumento per il ridimensionamento dei filmati
+Comment=Calculate video crop/resize parameters
+Comment[it]=Calcola il ritaglio/ridimensionamento di un filmato
+Exec=miniresizer
+Terminal=false
+Type=Application
+MimeType=video/mpeg;video/mp4;video/msvideo;video/x-msvideo;video/avi;video/x-matroska;video/mp2t;video/mp2p;video/mpv;video/ogg;video/x-ogm+ogg;
+Categories=AudioVideo;Video;
