@@ -771,9 +771,14 @@ int main(int argc, char **argv) {
 	av_register_all();
 	Fl::visual(FL_RGB);
 	
-	const char* filename = fl_file_chooser("Open a video file", "*", "", 0);
-	if (!filename) {
-		exit(0);
+	const char* filename = NULL;
+	if (argc > 1 && argv[1] != NULL && *argv[1] != '\0') {
+		filename = argv[1];
+	} else {
+		filename = fl_file_chooser(PACKAGE_NAME ": open a video file", "*", "", 0);
+		if (!filename) {
+			exit(0);
+		}
 	}
 	
 	try {
