@@ -13,7 +13,17 @@ AC_CANONICAL_HOST
 
 # Checks for programs.
 AC_PROG_CC
+if test "x$CC" == "x"; then
+	echo "Cannot find usable a C compiler"
+	(exit 1); exit 1
+fi
+
 AC_PROG_CXX
+if test "x$CXX" == "x"; then
+	echo "Cannot find usable a C++ compiler"
+	(exit 1); exit 1
+fi
+
 AC_CHECK_PROGS([FLUID], [fluid])
 if test "x$FLUID" == "x"; then
 	echo "The fluid program (part of FLTK) was not found on this system."
@@ -30,7 +40,6 @@ case "$host" in
 	fi
 	type_of_host=win32
 	AC_DEFINE([WIN32], [1], [Defined when building for MS Windows])
-	AC_MSG_NOTICE([Building for win32])
 ;;
 *) ;;
 esac
@@ -83,3 +92,17 @@ fi
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
+
+echo
+echo "Build configuration------------------------------------------------"
+echo
+
+echo -n "Target system: "
+if test "x$type_of_host" == "xwin32"; then
+	echo "Win32"
+else
+	echo "Posix"
+fi
+
+echo
+echo "-------------------------------------------------------------------"
