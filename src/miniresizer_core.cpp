@@ -6,6 +6,12 @@
 #include <iostream>
 #include "miniresizer.hpp"	// For the GUI
 #include "miniresizer_core.hpp"
+#include <stdlib.h>
+#include <sstream>
+
+#ifdef HAVE_WORDEXP_H
+# include <wordexp.h>
+#endif
 
 ResizeWindow& ResizeWindow::SetInputHeight(FrameSize inputHeight) {
 	if (inputHeight <= 0) {
@@ -133,7 +139,26 @@ ResizeWindow::ResizeWindow():
 	mCropBottom->callback(&handleCropBottomChange, this);
 	mCropLeft->callback(&handleCropLeftChange, this);
 	mTargetWidth->callback(&handleTargetWidthChange, this);
-	
+
+#ifdef ENABLE_FILTERGRAPH
+	mMakeDefaultFg->callback(&saveFiltergraph, this);
+	Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
+	Fl_Preferences defaultGroup(prefs, "default");
+	char *fg;
+	defaultGroup.get("filtergraph", fg, "");
+	if (!fg) {
+		throw ResourceAllocationException("Unable to allocate space for reading the settings");
+	}
+	try {
+		mFgSource->buffer()->text(fg);
+		free(fg);
+	} catch (...) {
+		free(fg);
+	}
+#else
+	h(mAboveFg->y());
+#endif
+
 	// Calculate & display resize parameters based on default values
 	// typed in the UI definition file
 	evaluate(false);
@@ -345,10 +370,93 @@ void ResizeWindow::evaluate(bool doCallback) {
 	mResizedHeight->value(target_h_mult16);
 	mResizeError->value((Ratio(target_h_mult16) - target_h) / target_h);
 
+	const FrameSize delta_h = abs(target_h_mult16 - target_h);
+	mPixelDelta->value(delta_h);
+
+#ifdef ENABLE_FILTERGRAPH
+	expandFiltergraph();
+#endif
+
 	if (mOnResize && doCallback) {
 		mOnResize->Callback(this);
 	}
 }
+
+#ifdef ENABLE_FILTERGRAPH
+
+template <typename T> void putInEnv(const char * const name, const T& value) {
+	std::ostringstream os;
+	os << value;
+	setenv(name, os.str().c_str(), 1);
+}
+
+void ResizeWindow::expandFiltergraph() {
+	std::ostringstream os;
+	// Export resize parameters to the environment for wordexp to use
+	putInEnv("MRCL", mCropLeft->value());
+	putInEnv("MRCR", mCropRight->value());
+	putInEnv("MRCT", mCropTop->value());
+	putInEnv("MRCB", mCropBottom->value());
+	putInEnv("MRCW", mCroppedWidth->value());
+	putInEnv("MRCH", mCroppedHeight->value());
+	putInEnv("MRTW", mResizedWidth->value());
+	putInEnv("MRTH", mResizedHeight->value());
+
+	const char *filterSourceC = mFgSource->buffer()->text();
+	wordexp_t we;
+
+	if (!filterSourceC) {
+		throw ResourceAllocationException("Unable to get filtergraph source in textual form for processing");
+	}
+	try {
+		std::string filterSource;
+		filterSource.reserve(mFgSource->buffer()->length() + 2);
+		filterSource.push_back('\u0022');
+		filterSource.append(filterSourceC);
+		filterSource.push_back('\u0022');
+		free(const_cast<char*>(filterSourceC));
+		filterSourceC = 0;
+		if (wordexp(filterSource.c_str(), &we, 0)) {
+			mFgFilter->color(FL_RED);
+			mFgFilter->buffer()->text("");
+			return;
+		}
+	} catch (...) {
+		if (filterSourceC) {
+			free(const_cast<char*>(filterSourceC));
+		}
+		throw;
+	}
+
+
+	try {
+		if (we.we_wordv[0]) {
+			mFgFilter->color(FL_WHITE);
+			mFgFilter->buffer()->text(we.we_wordv[0]);
+		}
+		wordfree(&we);
+	} catch (...) {
+		wordfree(&we);
+		throw;
+	}
+}
+
+void ResizeWindow::saveFiltergraph(Fl_Widget *w, void *_p) {
+	Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
+	Fl_Preferences defaultGroup(prefs, "default");
+	char *fg = static_cast<ResizeWindow*>(_p)->mFgSource->buffer()->text();
+	if (!fg) {
+		throw ResourceAllocationException("Memory allocation failed");
+	}
+	try {
+		defaultGroup.set("filtergraph", fg);
+		free(fg);
+	} catch (...) {
+		free(fg);
+	}
+}
+
+#endif
 
 void ResizeWindow::TriggerUpdate() {
 	evaluate(true);

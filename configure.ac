@@ -2,12 +2,22 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([MiniResizer], [0.0.4])
+AC_INIT([MiniResizer], [0.0.5])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([foreign -Wportability])
 
+AH_TEMPLATE([ENABLE_FILTERGRAPH], [Enable filtergraph expansion])
+
 AC_CONFIG_SRCDIR([src/miniresizer_core.cpp])
 AC_CONFIG_HEADERS([config.h])
+
+AC_ARG_ENABLE([filtergraph], AS_HELP_STRING([--enable-filtergraph], [expand filtergraphs (default: yes)]))
+
+AS_IF([test "x$enable_filtergraph" != "xno"], [
+	AC_DEFINE([ENABLE_FILTERGRAPH], [1])
+	report_filtergraph="Filtergraph expansion: yes"
+	require_wordexp=yes
+], [report_filtergraph="Filtergraph expansion: no"])
 
 AC_CANONICAL_HOST
 
@@ -86,7 +96,15 @@ if test "x$has_ffmpeg" == "xno"; then
 	(exit 1); exit 1
 fi
 
+AS_IF([test "x$require_wordexp" == "xyes"], [
+	AC_CHECK_HEADERS([wordexp.h], [], [echo "This configuration needs wordexp.h"; (exit 1); exit 1])
+])
+
 # Checks for typedefs, structures, and compiler characteristics.
+AS_IF([test "x$require_wordexp" == "xyes"], [
+	AC_CHECK_TYPES([wordexp_t], [], [echo "This configuration needs wordexp_t"; (exit 1); exit 1], [#include <wordexp.h>])
+	AC_CHECK_FUNCS([wordexp wordfree], [], [echo "This configuration needs wordexp and wordfree"; (exit 1); exit 1])
+])
 
 # Checks for library functions.
 
@@ -103,6 +121,8 @@ if test "x$type_of_host" == "xwin32"; then
 else
 	echo "Posix"
 fi
+
+echo "$report_filtergraph"
 
 echo
 echo "-------------------------------------------------------------------"

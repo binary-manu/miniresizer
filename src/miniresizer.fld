@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0302 
+version 1.0303 
 header_name {.hpp} 
 code_name {.cpp}
 decl {\#include "Fl_Value_Output_3Digit.hpp"} {public global
@@ -7,13 +7,13 @@ decl {\#include "Fl_Value_Output_3Digit.hpp"} {public global
 
 widget_class ResizeWindowBase {
   label MiniResizer open
-  private xywh {336 237 655 360} type Double
+  private xywh {328 245 655 670} type Double
   class Fl_Window visible
 } {
   decl {typedef Fl_Spinner CropWidgetType;} {protected local
   }
   Fl_Group {} {
-    label {Input info} open
+    label {Input info}
     protected xywh {5 22 315 81} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Value_Output mInputWidth {
@@ -36,7 +36,7 @@ widget_class ResizeWindowBase {
     }
   }
   Fl_Group {} {
-    label {Crop Control} open
+    label {Crop Control}
     protected xywh {5 134 315 219} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Value_Input mCropAlign {
@@ -70,7 +70,7 @@ widget_class ResizeWindowBase {
   }
   Fl_Group {} {
     label {Resize Control} open
-    protected xywh {335 22 315 145} box PLASTIC_UP_FRAME align 5
+    protected xywh {335 22 315 216} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Choice mDarChoice {
       label DAR open
@@ -99,26 +99,52 @@ widget_class ResizeWindowBase {
       protected xywh {488 131 60 25}
     }
     Fl_Value_Output mResizeError {
-      label Err
-      protected xywh {587 130 56 25}
+      label {Relative error}
+      protected xywh {440 169 108 25}
       class Fl_Value_Output_3Digit
+    }
+    Fl_Value_Output mPixelDelta {
+      label {Pixel delta}
+      protected xywh {440 204 108 25}
     }
   }
   Fl_Group {} {
-    label {Visual aids} open
-    protected xywh {335 200 315 153} box PLASTIC_UP_FRAME align 5
+    label {Visual aids}
+    protected xywh {335 272 315 81} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Choice mPreviewBorder {
       label Border open
-      protected tooltip {Shows a solid border around the preview to ease cropping} xywh {398 215 136 25} down_box BORDER_BOX
+      protected tooltip {Shows a solid border around the preview to ease cropping} xywh {398 283 136 25} down_box BORDER_BOX
     } {}
     Fl_Check_Button mZoomIn {
-      label Enlarge
-      protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {548 252 80 25} down_box DOWN_BOX
+      label Enlarge selected
+      protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {548 320 80 25} down_box DOWN_BOX
     }
     Fl_Value_Slider mZoomMultiplier {
-      label Zoom selected
-      protected xywh {398 252 136 25} type Horizontal align 4 minimum 1 maximum 10 step 0.1 value 1
+      label Zoom
+      protected xywh {398 320 136 25} type Horizontal align 4 minimum 1 maximum 10 step 0.1 value 1
+    }
+  }
+  Fl_Box mAboveFg {
+    xywh {5 360 25 5}
+  }
+  Fl_Group {} {
+    label Filtergraph open
+    protected xywh {5 385 645 280} box PLASTIC_UP_FRAME align 5
+  } {
+    Fl_Text_Editor mFgSource {
+      label Source
+      protected xywh {15 412 625 85} align 5
+      code0 {mFgSource->buffer(new Fl_Text_Buffer);}
+    }
+    Fl_Text_Display mFgFilter {
+      label Filter
+      protected xywh {15 568 625 85} align 5
+      code0 {mFgFilter->buffer(new Fl_Text_Buffer);}
+    }
+    Fl_Button mMakeDefaultFg {
+      label {Make default}
+      xywh {15 506 125 25}
     }
   }
 } 

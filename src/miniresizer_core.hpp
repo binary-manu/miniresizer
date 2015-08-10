@@ -73,7 +73,10 @@ public:
 	Ratio GetZoom() const;
 	bool IsZoomEnlarging() const;
 	void TriggerUpdate();
-		
+#ifdef ENABLE_FILTERGRAPH
+	void expandFiltergraph();
+#endif
+
 private:
 	OnResizeListener *mOnResize;
 	
@@ -100,7 +103,9 @@ private:
 	static void genericHandler(Fl_Widget *w, void *_p);
 	static FrameSize nearestInteger(Ratio d);
 	static FrameSize nearestMultiple(FrameSize i, FrameSize step);
-	
+#ifdef ENABLE_FILTERGRAPH
+	static void saveFiltergraph(Fl_Widget *w, void *_p);
+#endif
 	void evaluate(bool doCallback = true);
 };
 
