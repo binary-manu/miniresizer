@@ -416,7 +416,7 @@ void ResizeWindow::expandFiltergraph() {
 		filterSource.push_back('\u0022');
 		free(const_cast<char*>(filterSourceC));
 		filterSourceC = 0;
-		if (wordexp(filterSource.c_str(), &we, 0)) {
+		if (wordexp(filterSource.c_str(), &we, 0) || we.we_wordc != 1) {
 			mFgFilter->color(FL_RED);
 			mFgFilter->buffer()->text("");
 			return;
