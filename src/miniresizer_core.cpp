@@ -665,13 +665,13 @@ void RGBFrameReader::close() {
 
 void RGBFrameReader::SeekToFrame(Ratio where) {
 	DecodeResult dr;
-	bool seekFailed = true;;
+	bool seekFailed = true;
 	int64_t seekTo;
 	
 	do {
-		if (mVideoStream->duration > 0) {
-			seekTo = mVideoStream->duration * where;
-			seekFailed = av_seek_frame(mFormatCtx, mVideoStream->index, seekTo, AVSEEK_FLAG_BACKWARD) < 0;
+		if (mFormatCtx->duration > 0) {
+			seekTo = mFormatCtx->duration * where;
+			seekFailed = av_seek_frame(mFormatCtx, -1, seekTo, AVSEEK_FLAG_BACKWARD) < 0;
 		}
 		if (seekFailed) {
 			uint64_t seekTo = avio_size(mFormatCtx->pb) * where;
