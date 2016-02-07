@@ -8,6 +8,7 @@
 #include "miniresizer_core.hpp"
 #include <stdlib.h>
 #include <sstream>
+#include <map>
 
 #ifdef HAVE_WORDEXP_H
 # include <wordexp.h>
@@ -384,11 +385,126 @@ void ResizeWindow::evaluate(bool doCallback) {
 
 #ifdef ENABLE_FILTERGRAPH
 
-template <typename T> void putInEnv(const char * const name, const T& value) {
+#if !defined(HAVE_WORDEXP) || !defined(HAVE_WORDFREE)
+
+template <typename T> void ResizeWindow::putInEnv(const char * const name, const T& value) {
+	std::ostringstream os;
+	os << value;
+	mVars.put(name, os.str());
+}
+
+void ResizeWindow::expandVar(std::string& varName, std::string& appendHere) {
+	const std::string& expansion = mVars.get(varName);
+	if (expansion.size() > 0) {
+		appendHere += expansion;
+	}
+	varName.clear();
+}
+
+bool ResizeWindow::expandHelper(const std::string& filter, std::string& expansion) {
+	enum { X_NOVAR, X_ESC, X_VAR, X_VAR2, X_BRACE } state = X_NOVAR;
+
+	std::string tmp;
+	std::string varName;
+
+	for (std::string::const_iterator nextChar = filter.begin(); nextChar != filter.end();) {
+		switch (state) {
+		case X_NOVAR:
+			if (*nextChar == '\\') {
+				state = X_ESC;
+			} else if (*nextChar == '$') {
+				state = X_VAR;
+			} else {
+				tmp.push_back(*nextChar);
+			}
+		break;
+
+		case X_ESC:
+			if (*nextChar != '\n') {
+				tmp.push_back(*nextChar);
+			}
+			state = X_NOVAR;
+		break;
+
+		case X_VAR:
+			if (*nextChar == '{') {
+				state = X_BRACE;
+			} else if (isalnum(*nextChar) || *nextChar == '_') {
+				state = X_VAR2;
+				varName.push_back(*nextChar);
+			} else {
+				return false; // This means a dollar sign followed by neither { nor a valid name char
+			}
+		break;
+
+		case X_VAR2:
+			if (isalnum(*nextChar) || *nextChar == '_') {
+				varName.push_back(*nextChar);
+			} else {
+				expandVar(varName, tmp);
+				state = X_NOVAR;
+				// Keep nextChar to be processed again in X_NOVAR state
+				continue;
+			}
+		break;
+
+		case X_BRACE:
+			if (isalnum(*nextChar) || *nextChar == '_') {
+				varName.push_back(*nextChar);
+			} else if (*nextChar == '}') {
+				expandVar(varName, tmp);
+				state = X_NOVAR;
+			}
+		break;
+		}
+
+		nextChar++;
+	}
+
+	if (state == X_VAR || state == X_BRACE || state == X_ESC) {
+		return false;
+	}
+
+	if (state == X_VAR2) {
+		expandVar(varName, tmp);
+	}
+
+	expansion = tmp;
+	return true;
+}
+
+#else // #if !defined(HAVE_WORDEXP) || !defined(HAVE_WORDFREE)
+
+bool ResizeWindow::expandHelper(const std::string& filter, std::string& expansion) {
+	wordexp_t we;
+
+	std::string filterSource;
+	filterSource.reserve(filter.size() + 2);
+	filterSource.push_back('\u0022');
+	filterSource += filter;
+	filterSource.push_back('\u0022');
+	if (wordexp(filterSource.c_str(), &we, 0) || we.we_wordc != 1) {
+		return false;
+	}
+
+	try {
+		expansion = we.we_wordv[0];
+	} catch (...) {
+		wordfree(&we);
+		throw;
+	}
+	wordfree(&we);
+	return true;
+}
+
+template <typename T> void ResizeWindow::putInEnv(const char * const name, const T& value) {
 	std::ostringstream os;
 	os << value;
 	setenv(name, os.str().c_str(), 1);
 }
+
+#endif
+
 
 void ResizeWindow::expandFiltergraph() {
 	std::ostringstream os;
@@ -402,42 +518,23 @@ void ResizeWindow::expandFiltergraph() {
 	putInEnv("MRTW", mResizedWidth->value());
 	putInEnv("MRTH", mResizedHeight->value());
 
-	const char *filterSourceC = mFgSource->buffer()->text();
-	wordexp_t we;
-
-	if (!filterSourceC) {
+	const int filterLength = mFgSource->buffer()->length();
+	std::string filter;
+	filter.reserve(filterLength);
+	char* filterC = mFgSource->buffer()->text();
+	if (!filterC) {
 		throw ResourceAllocationException("Unable to get filtergraph source in textual form for processing");
 	}
-	try {
-		std::string filterSource;
-		filterSource.reserve(mFgSource->buffer()->length() + 2);
-		filterSource.push_back('\u0022');
-		filterSource.append(filterSourceC);
-		filterSource.push_back('\u0022');
-		free(const_cast<char*>(filterSourceC));
-		filterSourceC = 0;
-		if (wordexp(filterSource.c_str(), &we, 0) || we.we_wordc != 1) {
-			mFgFilter->color(FL_RED);
-			mFgFilter->buffer()->text("");
-			return;
-		}
-	} catch (...) {
-		if (filterSourceC) {
-			free(const_cast<char*>(filterSourceC));
-		}
-		throw;
-	}
+	filter = filterC;
+	free(filterC);
 
-
-	try {
-		if (we.we_wordv[0]) {
-			mFgFilter->color(FL_WHITE);
-			mFgFilter->buffer()->text(we.we_wordv[0]);
-		}
-		wordfree(&we);
-	} catch (...) {
-		wordfree(&we);
-		throw;
+	std::string expansion;
+	if (!expandHelper(filter, expansion)) {
+		mFgFilter->color(FL_RED);
+		mFgFilter->buffer()->text("");
+	} else {
+		mFgFilter->color(FL_WHITE);
+		mFgFilter->buffer()->text(expansion.c_str());
 	}
 }
 

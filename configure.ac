@@ -12,30 +12,34 @@ AC_CONFIG_SRCDIR([src/miniresizer_core.cpp])
 AC_CONFIG_HEADERS([config.h])
 
 AC_ARG_ENABLE([filtergraph], AS_HELP_STRING([--enable-filtergraph], [expand filtergraphs (default: yes)]))
+AC_ARG_ENABLE([filtergraph_builtin], AS_HELP_STRING([--enable-filtergraph-builtin], [force builtin filtergraph expansion (default: no)]))
 
-AS_IF([test "x$enable_filtergraph" != "xno"], [
+AS_IF([test "$enable_filtergraph_builtin" = "yes"], [
 	AC_DEFINE([ENABLE_FILTERGRAPH], [1])
-	report_filtergraph="Filtergraph expansion: yes"
-	require_wordexp=yes
-], [report_filtergraph="Filtergraph expansion: no"])
+	expansion_type='builtin'
+])
+AS_IF([test "$enable_filtergraph" != "no"], [
+	AC_DEFINE([ENABLE_FILTERGRAPH], [1])
+	: ${expansion_type:='wordexp'}	
+])
 
 AC_CANONICAL_HOST
 
 # Checks for programs.
 AC_PROG_CC
-if test "x$CC" == "x"; then
+if test "x$CC" = "x"; then
 	echo "Cannot find usable a C compiler"
 	(exit 1); exit 1
 fi
 
 AC_PROG_CXX
-if test "x$CXX" == "x"; then
+if test "x$CXX" = "x"; then
 	echo "Cannot find usable a C++ compiler"
 	(exit 1); exit 1
 fi
 
 AC_CHECK_PROGS([FLUID], [fluid])
-if test "x$FLUID" == "x"; then
+if test "x$FLUID" = "x"; then
 	echo "The fluid program (part of FLTK) was not found on this system."
 	echo "Please check that FLTK is installed. On some systems, fluid is"
 	echo "packaged separately from the main libraries"
@@ -72,7 +76,7 @@ AC_SEARCH_LIBS([swscale_license], [swscale], ,[has_ffmpeg=no])
 # Checks for header files.
 AC_CHECK_HEADERS([stdint.h], ,[AC_MSG_FAILURE([Header file 'stdint.h' is missing])])
 
-if test "x$has_fltk" == "xyes"; then
+if test "x$has_fltk" = "xyes"; then
 	# Here I just check for one FLTK header; if that one is present, then
 	# I'll assume the entire distribution is present
 	AC_LANG_PUSH([C++])
@@ -80,33 +84,35 @@ if test "x$has_fltk" == "xyes"; then
 	AC_LANG_POP([C++])
 fi
 
-if test "x$has_ffmpeg" == "xyes"; then
+if test "x$has_ffmpeg" = "xyes"; then
 	AC_CHECK_HEADERS([libavformat/avformat.h libavcodec/avcodec.h libavutil/avutil.h libavutil/imgutils.h libswscale/swscale.h], ,[has_ffmpeg=no])
 fi
 
-if test "x$has_fltk" == "xno"; then
+if test "x$has_fltk" = "xno"; then
 	echo "The Fast Light Toolkit (FLTK) libraries were not found on this system."
 	echo "Please check that FLTK is installed."
 	(exit 1); exit 1
 fi
 
-if test "x$has_ffmpeg" == "xno"; then
+if test "x$has_ffmpeg" = "xno"; then
 	echo "FFmpeg libraries were not found on this system."
 	echo "Please check that the ffmpeg package is installed."
 	(exit 1); exit 1
 fi
 
-AS_IF([test "x$require_wordexp" == "xyes"], [
-	AC_CHECK_HEADERS([wordexp.h], [], [echo "This configuration needs wordexp.h"; (exit 1); exit 1])
+AS_IF([test "$expansion_type" = "wordexp"], [
+	AC_CHECK_HEADERS([wordexp.h], [], [expansion_type='builtin'])
 ])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AS_IF([test "x$require_wordexp" == "xyes"], [
-	AC_CHECK_TYPES([wordexp_t], [], [echo "This configuration needs wordexp_t"; (exit 1); exit 1], [#include <wordexp.h>])
-	AC_CHECK_FUNCS([wordexp wordfree], [], [echo "This configuration needs wordexp and wordfree"; (exit 1); exit 1])
+AS_IF([test "$expansion_type" = "wordexp"], [
+	AC_CHECK_TYPES([wordexp_t], [], [expansion_type='builtin'], [#include <wordexp.h>])
 ])
 
 # Checks for library functions.
+AS_IF([test "$expansion_type" = "wordexp"], [
+	AC_CHECK_FUNCS([wordexp wordfree], [], [expansion_type='builtin'])
+])
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
@@ -116,13 +122,13 @@ echo "Build configuration------------------------------------------------"
 echo
 
 echo -n "Target system: "
-if test "x$type_of_host" == "xwin32"; then
+if test "x$type_of_host" = "xwin32"; then
 	echo "Win32"
 else
 	echo "Posix"
 fi
 
-echo "$report_filtergraph"
+echo "Filtergraph expansion: ${expansion_type:-'no'}"
 
 echo
 echo "-------------------------------------------------------------------"

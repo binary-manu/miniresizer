@@ -6,6 +6,7 @@
 #include "miniresizer.hpp"
 #include <memory>
 #include <stdexcept>
+#include <map>
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -105,6 +106,32 @@ private:
 	static FrameSize nearestMultiple(FrameSize i, FrameSize step);
 #ifdef ENABLE_FILTERGRAPH
 	static void saveFiltergraph(Fl_Widget *w, void *_p);
+
+	class Environment {
+	private:
+		typedef std::map<std::string, std::string> VarsType;
+		VarsType mVars;
+
+	public:
+		void put(const std::string& name, const std::string& value) {
+			mVars[name] = value;
+		}
+
+		const std::string get(const std::string& name) {
+			VarsType::const_iterator item = mVars.find(name);
+			if (item == mVars.end()) {
+				return getenv(name.c_str());
+			} else {
+				return item->second;
+			}
+		}
+	};
+
+	template <typename T> void putInEnv(const char * const name, const T& value);
+	void expandVar(std::string& varName, std::string& appendHere);
+	bool expandHelper(const std::string& filter, std::string& expansion);
+
+	Environment mVars;
 #endif
 	void evaluate(bool doCallback = true);
 };
@@ -132,7 +159,6 @@ public:
 	void ClearBorder();
 private:
 	void draw();
-	
 	SeekListener *mOnSeek;
 	FrameSize mPictureW;
 	FrameSize mPictureH;
