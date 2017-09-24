@@ -766,13 +766,13 @@ void RGBFrameReader::SeekToFrame(Ratio where) {
 	int64_t seekTo;
 	
 	do {
-		if (mFormatCtx->duration > 0) {
-			seekTo = mFormatCtx->duration * where;
-			seekFailed = av_seek_frame(mFormatCtx, -1, seekTo, AVSEEK_FLAG_BACKWARD) < 0;
-		}
+		uint64_t seekTo = avio_size(mFormatCtx->pb) * where;
+		seekFailed = av_seek_frame(mFormatCtx, mVideoStream->index, seekTo, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE) < 0;
 		if (seekFailed) {
-			uint64_t seekTo = avio_size(mFormatCtx->pb) * where;
-			seekFailed = av_seek_frame(mFormatCtx, mVideoStream->index, seekTo, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_BYTE) < 0;
+			if (mFormatCtx->duration > 0) {
+				seekTo = mFormatCtx->duration * where;
+				seekFailed = av_seek_frame(mFormatCtx, -1, seekTo, AVSEEK_FLAG_BACKWARD) < 0;
+			}
 		}
 		if (seekFailed) {
 			throw AVException("Cannot seek the media file");
