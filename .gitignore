@@ -1,7 +1,7 @@
 build*/
 dist/
-miniresizer.cpp
-miniresizer.hpp
+miniresizer.cxx
+miniresizer.h
 config/
 autom4te.cache/
 aclocal.m4
@@ -17,3 +17,6 @@ stamp-h1
 src/.deps/
 src/miniresizer
 config.*
+*.cmake
+CMakeFiles/
+CMakeCache.txt

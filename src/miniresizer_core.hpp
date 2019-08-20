@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "miniresizer.hpp"
+#include "miniresizer.h"
 #include <memory>
 #include <stdexcept>
 #include <map>
@@ -202,4 +202,3 @@ private:
 };
 
 #endif	/* MINIRESIZER_CORE_HPP */
-
