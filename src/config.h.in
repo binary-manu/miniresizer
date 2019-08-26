@@ -1,0 +1,4 @@
+#cmakedefine HAVE_WORDEXP_H
+#cmakedefine ENABLE_FILTERGRAPH
+#cmakedefine PACKAGE_NAME "@PACKAGE_NAME@"
+#cmakedefine PACKAGE_STRING "@PACKAGE_STRING@"
