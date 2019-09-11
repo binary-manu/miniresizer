@@ -4,6 +4,7 @@ config.h
 *.o
 miniresizer
 *.cmake
+!/src/cmake_modules/*.cmake
 CMakeFiles/
 CMakeCache.txt
 *.exe
