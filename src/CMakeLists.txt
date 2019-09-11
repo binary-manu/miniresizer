@@ -15,9 +15,15 @@ function(find_library_or_exit)
             set(name ${ARGV1})
         endif()
         message(FATAL_ERROR "Library '${name}' not found")
+    else()
+        message(STATUS "Found ${ARGV0}: ${${ARGV0}}")
     endif()
 endfunction()
 
+#[[
+    Calls find_program forwarding all arguments to it.
+    If the specified program is not found, stop CMake with a fatal error.
+#]]
 function(find_program_or_exit)
     cmake_parse_arguments(FPOE_ "" "" NAMES ${ARGV})
     find_program(${ARGV})
@@ -28,6 +34,8 @@ function(find_program_or_exit)
             set(name ${ARGV1})
         endif()
         message(FATAL_ERROR "Program '${name}' not found")
+    else()
+        message(STATUS "Found ${ARGV0}: ${${ARGV0}}")
     endif()
 endfunction()
 
@@ -45,6 +53,8 @@ function(find_path_or_exit)
             set(name ${ARGV1})
         endif()
         message(FATAL_ERROR "Header '${name}' not found")
+    else()
+        message(STATUS "Found ${ARGV0}: ${${ARGV0}}")
     endif()
 endfunction()
 
