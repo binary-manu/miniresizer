@@ -126,20 +126,14 @@ add_executable(miniresizer ${SOURCES})
 target_link_libraries(miniresizer PRIVATE ffmpeg fltk fltk_ui)
 
 if(WIN32)
-    #find_program_or_exit(WINDRES NAMES windres $<ARCH:${ARCH}-windres>)
     set(windres_names windres)
     if(ARCH)
         list(APPEND windres_names ${ARCH}-windres)
     endif()
     find_program_or_exit(WINDRES NAMES ${windres_names})
+    set(CMAKE_RC_COMPILER ${WINDRES} CACHE PATH "Windows RC compiler" FORCE)
 
-    add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/miniresizer.res
-        MAIN_DEPENDENCY res/win/winres.rc
-        COMMAND ${WINDRES} -o miniresizer.res -i res/win/winres.rc
-        VERBATIM)
-
-    target_link_libraries(miniresizer PRIVATE ${CMAKE_BINARY_DIR}/miniresizer.res)
+    target_sources(miniresizer PRIVATE res/win/winres.rc)
 else()
     # Copy icons and desktop file
     foreach(size 16x16 24x24 32x32 48x48 64x64 72x72 96x96 128x128)
