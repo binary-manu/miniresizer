@@ -691,6 +691,7 @@ void PreviewWindow::draw() {
 
 RGBFrameReader::RGBFrameReader(const char* filename):
 		mFormatCtx(0),
+		mCodecCtx(0),
 		mVideoStream(0),
 		mScaler(0),
 		mFrame(0)
@@ -698,6 +699,11 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 	try {
 		avformat_open_input(&mFormatCtx, filename, 0, 0);
 		if (mFormatCtx == 0) {
+			throw AVException((std::string("Unable to open ") + filename).c_str());
+		}
+
+		mCodecCtx = avcodec_alloc_context3(NULL);
+		if (mCodecCtx == 0) {
 			throw AVException((std::string("Unable to open ") + filename).c_str());
 		}
 
@@ -709,20 +715,21 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		if (videoStream < 0) {
 			throw AVException((std::string("Unable to open ") + filename).c_str());
 		}
+		mVideoStream = mFormatCtx->streams[videoStream];
 
-		if (avcodec_open2(mFormatCtx->streams[videoStream]->codec,
-				avcodec_find_decoder(mFormatCtx->streams[videoStream]->codec->codec_id), 0) < 0) {
+		if (avcodec_parameters_to_context(mCodecCtx, mVideoStream->codecpar) < 0 ||
+			avcodec_open2(mCodecCtx, avcodec_find_decoder(
+				mVideoStream->codecpar->codec_id), 0) < 0) {
 			throw AVException((std::string("Unable to open ") + filename).c_str());
 		}
-		mVideoStream = mFormatCtx->streams[videoStream];
-		if (mVideoStream->codec->height <= 0 || mVideoStream->codec->width <= 0) {
+		if (mCodecCtx->height <= 0 || mCodecCtx->width <= 0) {
 			throw AVException("Codec does not provide frame sizes");
 		}
 
 		mScaler = sws_getCachedContext(
 			0,
-			mVideoStream->codec->width, mVideoStream->codec->height, mVideoStream->codec->pix_fmt,
-			mVideoStream->codec->width, mVideoStream->codec->height, AV_PIX_FMT_RGB24,
+			mCodecCtx->width, mCodecCtx->height, mCodecCtx->pix_fmt,
+			mCodecCtx->width, mCodecCtx->height, AV_PIX_FMT_RGB24,
 			SWS_FAST_BILINEAR, 0, 0, 0);
 		if (!mScaler) {
 			throw AVException((std::string("Cannot create AV scaler for ") + filename).c_str());
@@ -752,8 +759,8 @@ void RGBFrameReader::close() {
 	if (mScaler) {
 		sws_freeContext(mScaler);
 	}
-	if (mVideoStream) {
-		avcodec_close(mVideoStream->codec);
+	if (mCodecCtx) {
+		avcodec_free_context(&mCodecCtx);
 	}
 	if (mFormatCtx) {
 		avformat_close_input(&mFormatCtx);
@@ -777,7 +784,7 @@ void RGBFrameReader::SeekToFrame(Ratio where) {
 		if (seekFailed) {
 			throw AVException("Cannot seek the media file");
 		}
-		avcodec_flush_buffers(mVideoStream->codec);
+		avcodec_flush_buffers(mCodecCtx);
 		dr = decodeFrame();
 	} while (where -= 0.001, dr == DR_EOF && where >= 0);
 	if (dr == DR_EOF) {
@@ -787,21 +794,21 @@ void RGBFrameReader::SeekToFrame(Ratio where) {
 }
 
 FrameSize RGBFrameReader::GetFrameWidth() const {
-	return mVideoStream->codec->width;
+	return mCodecCtx->width;
 }
 
 FrameSize RGBFrameReader::GetFrameHeight() const {
-	return mVideoStream->codec->height;
+	return mCodecCtx->height;
 }
 
 Ratio RGBFrameReader::GetFrameDAR() const {
-	if (mVideoStream->codec->sample_aspect_ratio.num != 0 && mVideoStream->codec->sample_aspect_ratio.den != 0) {
+	if (mCodecCtx->sample_aspect_ratio.num != 0 && mCodecCtx->sample_aspect_ratio.den != 0) {
 		// Derive the DAR from SAR and PAR suggested by the compressor
-		return Ratio(mVideoStream->codec->sample_aspect_ratio.num) * mVideoStream->codec->width /
-			mVideoStream->codec->sample_aspect_ratio.den / mVideoStream->codec->height;
+		return Ratio(mCodecCtx->sample_aspect_ratio.num) * mCodecCtx->width /
+			mCodecCtx->sample_aspect_ratio.den / mCodecCtx->height;
 	} else {
 		// Just return the SAR so that we get a square pixel
-		return Ratio(mVideoStream->codec->width) / mVideoStream->codec->height;
+		return Ratio(mCodecCtx->width) / mCodecCtx->height;
 	}
 }
 
@@ -820,19 +827,21 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
 			throw AVException("AV frame read error");
 		}
 		if (pkt.stream_index != mVideoStream->index) {
-			av_free_packet(&pkt);
+			av_packet_unref(&pkt);
 			continue;
 		}
 
 		int got;
-		what = avcodec_decode_video2(mVideoStream->codec, mFrame, &got, &pkt);
+		what = avcodec_send_packet(mCodecCtx, &pkt);
+		av_packet_unref(&pkt);
 		if (what < 0) {
-			av_free_packet(&pkt);
 			throw AVException("AV frame decode error");
 		}
-		av_free_packet(&pkt);
-		if (got) {
+		what = avcodec_receive_frame(mCodecCtx, mFrame);
+		if (what == 0) {
 			break;
+		} else if (what != AVERROR(EAGAIN)) {
+			throw AVException("AV frame decode error");
 		}
 	} while (true);
 	
@@ -840,18 +849,18 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
 	uint8_t *rgbData[4];
 	int rgbLinesize[4];
 	
-	if (av_image_alloc(rgbData, rgbLinesize, mVideoStream->codec->width,
-			mVideoStream->codec->height, AV_PIX_FMT_RGB24, 1) < 0) {
+	if (av_image_alloc(rgbData, rgbLinesize, mCodecCtx->width,
+			mCodecCtx->height, AV_PIX_FMT_RGB24, 1) < 0) {
 		throw ResourceAllocationException("Cannot convert frame to RGB");
 	}
 
 	if (sws_scale(mScaler, (const uint8_t **)mFrame->data, mFrame->linesize, 0,
-			mVideoStream->codec->height, rgbData, rgbLinesize) < 0) {
+			mCodecCtx->height, rgbData, rgbLinesize) < 0) {
 		av_freep(&rgbData[0]);
 		throw AVException("AV frame scale error");
 	}
 	
-	mFrameData.resize(rgbLinesize[0] * mVideoStream->codec->height);
+	mFrameData.resize(rgbLinesize[0] * mCodecCtx->height);
 	memcpy(&mFrameData[0], rgbData[0], mFrameData.size());
 	av_freep(&rgbData[0]);
 	
@@ -973,7 +982,6 @@ private:
 };
 
 int main(int argc, char **argv) {	
-	av_register_all();
 	Fl::visual(FL_RGB);
 	
 	const char* filename = NULL;

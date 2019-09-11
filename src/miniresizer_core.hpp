@@ -192,6 +192,7 @@ private:
 	RGBFrameReader& operator=(const RGBFrameReader&);
 	
 	AVFormatContext *mFormatCtx;
+	AVCodecContext *mCodecCtx;
 	AVStream *mVideoStream;
 	SwsContext *mScaler;
 	AVFrame *mFrame;
