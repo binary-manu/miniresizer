@@ -131,7 +131,7 @@ widget_class ResizeWindowBase {
     }
   }
   Fl_Box mAboveFg {
-    xywh {5 360 25 5}
+    protected xywh {5 360 25 5}
   }
   Fl_Group {} {
     label Filtergraph
