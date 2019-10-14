@@ -4,7 +4,6 @@
 #include <FL/Fl_File_Chooser.H>
 #include <string>
 #include <iostream>
-#include "miniresizer.h"	// For the GUI
 #include "miniresizer_core.hpp"
 #include <stdlib.h>
 #include <sstream>

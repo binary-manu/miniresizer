@@ -1,0 +1,20 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0305
+header_name {preview.hpp}
+code_name {preview.cpp}
+widget_class PreviewWindowBase {
+  label Preview open
+  private xywh {666 319 485 325} type Double hide resizable
+  class Fl_Window
+} {
+  Fl_Group mContainer {open
+    protected xywh {0 287 485 38} box FLAT_BOX
+  } {
+    Fl_Slider mPosition {
+      protected xywh {7 294 471 26} type Horizontal labeltype NO_LABEL maximum 999 step 1
+    }
+  }
+  Fl_Group {} {open
+    protected xywh {7 272 471 1} hide resizable
+  } {}
+}

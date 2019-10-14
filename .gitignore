@@ -1,5 +1,7 @@
-miniresizer.cxx
-miniresizer.h
+preview.cxx
+preview.h
+resize.cxx
+resize.h
 config.h
 *.o
 miniresizer

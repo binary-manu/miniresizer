@@ -37,7 +37,7 @@ if (NOT FLTK_FOUND)
     message(FATAL_ERROR "FLTK was not found")
 endif()
 
-fltk_wrap_ui(miniresizer miniresizer.fld)
+fltk_wrap_ui(miniresizer preview.fld resize.fld)
 
 set(PACKAGE_NAME "${PROJECT_NAME}")
 set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")

@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 #include <vector>
-#include "miniresizer.h"
+#include "resize.h"
+#include "preview.h"
 #include <memory>
 #include <stdexcept>
 #include <map>
