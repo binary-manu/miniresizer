@@ -135,6 +135,8 @@ ResizeWindow::ResizeWindow():
 	mCropBottom->callback(&handleCropBottomChange, this);
 	mCropLeft->callback(&handleCropLeftChange, this);
 	mTargetWidth->callback(&handleTargetWidthChange, this);
+	mWSnap->callback(&handleWSnapChange, this);
+	mHSnap->callback(&genericHandler, this);
 
 #ifdef ENABLE_FILTERGRAPH
 	mMakeDefaultFg->callback(&saveFiltergraph, this);
@@ -282,16 +284,23 @@ void ResizeWindow::handleDARTyping(Fl_Widget *w, void *_p) {
 	
 void ResizeWindow::handleTargetWidthChange(Fl_Widget *w, void *_p) {
 	ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
-/*	if (p->mTargetWidth->value() < p->mTargetWidth->minimum()) {
-		p->mTargetWidth->value(p->mTargetWidth->minimum());
-	}
-	if (p->mTargetWidth->value() > p->mTargetWidth->maximum()) {
-		p->mTargetWidth->value(p->mTargetWidth->maximum());
-	}
-*/	
 	if (p->mTargetWidth->value() < p->mTargetWidth->step()) {
 		p->mTargetWidth->value(p->mTargetWidth->step());
 	}
+	p->evaluate();
+}
+
+void ResizeWindow::handleWSnapChange(Fl_Widget *w, void *_p) {
+	ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
+	const FrameSize snap = p->mWSnap->value();
+	FrameSize newSize = nearestMultiple(
+		p->mTargetWidth->value(), snap
+	);
+	if (newSize < snap) {
+		newSize = snap;
+	}
+	p->mTargetWidth->step(snap);
+	p->mTargetWidth->value(newSize);
 	p->evaluate();
 }
 
@@ -342,15 +351,16 @@ void ResizeWindow::evaluate(bool doCallback) {
 
 	double scaled_h = cropH / par;
 	FrameSize target_h = nearestInteger(scaled_h * mTargetWidth->value() / cropW);
-	FrameSize target_h_mult16 = nearestMultiple(target_h, 16);
-	if (target_h <= 0 || target_h_mult16 <= 0) {
-		target_h = target_h_mult16 = 1;
+	FrameSize target_h_mult = nearestMultiple(target_h, mHSnap->value());
+	if (target_h <= 0 || target_h_mult <= 0) {
+		target_h = 1;
+		target_h_mult = mHSnap->value();
 	}
 	mResizedWidth->value(mTargetWidth->value());
-	mResizedHeight->value(target_h_mult16);
-	mResizeError->value((Ratio(target_h_mult16) - target_h) / target_h);
+	mResizedHeight->value(target_h_mult);
+	mResizeError->value((Ratio(target_h_mult) - target_h) / target_h);
 
-	const FrameSize delta_h = abs(target_h_mult16 - target_h);
+	const FrameSize delta_h = abs(target_h_mult - target_h);
 	mPixelDelta->value(delta_h);
 
 #ifdef ENABLE_FILTERGRAPH

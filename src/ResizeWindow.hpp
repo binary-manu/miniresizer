@@ -73,6 +73,7 @@ private:
 	static void handleDARTyping(Fl_Widget *w, void *_p);
 	static void handleTargetWidthChange(Fl_Widget *w, void *_p);
 	static void handleClose(Fl_Widget *w, void *_p);
+	static void handleWSnapChange(Fl_Widget *w, void *_p);
 	static void genericHandler(Fl_Widget *w, void *_p);
 	static FrameSize nearestInteger(Ratio d);
 	static FrameSize nearestMultiple(FrameSize i, FrameSize step);

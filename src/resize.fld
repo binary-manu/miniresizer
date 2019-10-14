@@ -97,12 +97,20 @@ widget_class ResizeWindowBase {
     }
     Fl_Value_Output mResizeError {
       label {Relative error}
-      protected xywh {440 169 108 25}
+      protected xywh {440 169 70 25}
       code0 {mResizeError->precision(3);}
     }
     Fl_Value_Output mPixelDelta {
       label {Pixel delta}
-      protected xywh {440 204 108 25}
+      protected xywh {440 204 70 25}
+    }
+    Fl_Value_Input mWSnap {
+      label {W snap}
+      protected xywh {595 169 48 25} minimum 1 maximum 9999 step 1 value 16
+    }
+    Fl_Value_Input mHSnap {
+      label {H snap} selected
+      protected xywh {595 204 48 25} minimum 1 maximum 9999 step 1 value 16
     }
   }
   Fl_Group {} {
