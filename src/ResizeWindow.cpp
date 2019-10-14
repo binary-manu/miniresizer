@@ -374,7 +374,7 @@ void ResizeWindow::evaluate(bool doCallback) {
 
 #ifdef ENABLE_FILTERGRAPH
 
-#if !defined(HAVE_WORDEXP) || !defined(HAVE_WORDFREE)
+#if !defined(HAVE_WORDEXP_H)
 
 template <typename T> void ResizeWindow::putInEnv(const char * const name, const T& value) {
 	std::ostringstream os;
@@ -462,7 +462,7 @@ bool ResizeWindow::expandHelper(const std::string& filter, std::string& expansio
 	return true;
 }
 
-#else // #if !defined(HAVE_WORDEXP) || !defined(HAVE_WORDFREE)
+#else // #if !defined(HAVE_WORDEXP_H)
 
 bool ResizeWindow::expandHelper(const std::string& filter, std::string& expansion) {
 	wordexp_t we;
