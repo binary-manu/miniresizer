@@ -1,42 +1,13 @@
-#ifndef MINIRESIZER_CORE_HPP
-#define	MINIRESIZER_CORE_HPP
+#ifndef RESIZE_WINDOW_HPP
+#define	RESIZE_WINDOW_HPP
 
-#include <stdint.h>
 #include <vector>
 #include "resize.h"
-#include "preview.h"
-#include <memory>
-#include <stdexcept>
-#include <map>
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-#include <libavutil/imgutils.h>
-}
+#include "Common.hpp"
 
-
-template <typename Base, typename tag>
-class Exception : public Base {
-public:
-	Exception(const char* what): Base(what) {}
-};
-
-// Type used to store frame width/height
-typedef int FrameSize;
-// Type used to represent ratios
-typedef double Ratio;
-// Type to represent positions/frame numbers
-typedef int Position;
-// Type used for colors
-typedef Fl_Color Color;
-
-typedef Exception<std::logic_error, struct MRExceptionTag> MRException;
-typedef Exception<MRException, struct MRNonSevereExceptiongTag> MRNonSevereException;
-typedef Exception<MRException, struct MRSevereExceptiongTag> MRSevereException;
-typedef Exception<MRSevereException, struct InvalidValueExceptionTag> InvalidValueException;
-typedef Exception<MRNonSevereException, struct ResourceAllocationTag> ResourceAllocationException;
-typedef Exception<MRNonSevereException, struct AVExceptionTag> AVException;
+#ifdef ENABLE_FILTERGRAPH
+	#include <map>
+#endif
 
 // Main window class inherits from FLTK generated code
 class ResizeWindow : public ResizeWindowBase {
@@ -137,70 +108,4 @@ private:
 	void evaluate(bool doCallback = true);
 };
 
-
-class PreviewWindow : public PreviewWindowBase {
-public:
-	typedef PreviewWindowBase Base;
-	
-	class SeekListener {
-	public:
-		~SeekListener() {}
-		virtual void Callback(PreviewWindow *theView) = 0;
-	};
-	
-	PreviewWindow();
-	~PreviewWindow();
-	void DrawPicture(const uint8_t *rgb, FrameSize w, FrameSize h);
-	Position GetGranularity();
-	Position GetPosition();
-	void TriggerUpdate();
-	PreviewWindow& SetOnSeekListener(SeekListener *cb);
-	SeekListener *GetOnSeekListener();
-	void SetBorderColor(Color c);
-	void ClearBorder();
-private:
-	void draw();
-	SeekListener *mOnSeek;
-	FrameSize mPictureW;
-	FrameSize mPictureH;
-	std::vector<uint8_t> mPictureData;
-	bool mHasBorder;
-	Color mBorderColor;
-	
-	static const FrameSize BORDER_SIZE = 8;
-	
-	static void handleSlider(Fl_Widget *w, void *p);
-	static void handleClose(Fl_Widget* w, void* _p);
-	void evaluate(bool docallback);
-};
-
-class RGBFrameReader {
-public:
-	RGBFrameReader(const char* filename);
-	~RGBFrameReader();
-	void SeekToFrame(Ratio where);
-	FrameSize GetFrameWidth() const;
-	FrameSize GetFrameHeight() const;
-	Ratio GetFrameDAR() const;
-	const uint8_t *GetFrameData() const;
-private:
-	enum DecodeResult {
-		DR_OK,
-		DR_EOF
-	};
-	
-	RGBFrameReader(const RGBFrameReader&);
-	RGBFrameReader& operator=(const RGBFrameReader&);
-	
-	AVFormatContext *mFormatCtx;
-	AVCodecContext *mCodecCtx;
-	AVStream *mVideoStream;
-	SwsContext *mScaler;
-	AVFrame *mFrame;
-	std::vector<uint8_t> mFrameData;
-	
-	DecodeResult decodeFrame();
-	void close();
-};
-
-#endif	/* MINIRESIZER_CORE_HPP */
+#endif	/* RESIZE_WINDOW_HPP */

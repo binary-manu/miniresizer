@@ -4,10 +4,11 @@
 #include <FL/Fl_File_Chooser.H>
 #include <string>
 #include <iostream>
-#include "miniresizer_core.hpp"
+#include "ResizeWindow.hpp"
+#include "PreviewWindow.hpp"
+#include "RGBFrameReader.hpp"
 #include <stdlib.h>
 #include <sstream>
-#include <map>
 
 #ifdef HAVE_WORDEXP_H
 # include <wordexp.h>
