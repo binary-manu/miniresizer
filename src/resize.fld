@@ -37,7 +37,7 @@ widget_class ResizeWindowBase {
     protected xywh {5 134 315 219} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Value_Input mCropAlign {
-      label {Crop Align}
+      label {Crop Snap}
       protected xywh {90 144 45 25} minimum 1 maximum 16 step 1 value 2
     }
     Fl_Spinner mCropTop {
@@ -105,11 +105,11 @@ widget_class ResizeWindowBase {
       protected xywh {440 204 70 25}
     }
     Fl_Value_Input mWSnap {
-      label {W snap}
+      label {W Snap}
       protected xywh {595 169 48 25} minimum 1 maximum 9999 step 1 value 16
     }
     Fl_Value_Input mHSnap {
-      label {H snap} selected
+      label {H Snap}
       protected xywh {595 204 48 25} minimum 1 maximum 9999 step 1 value 16
     }
   }
