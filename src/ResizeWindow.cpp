@@ -349,7 +349,7 @@ void ResizeWindow::evaluate(bool doCallback) {
 	Ratio par = mDar->value() / mInputSar->value();
 	mPar->value(par);
 
-	double scaled_h = cropH / par;
+	Ratio scaled_h = cropH / par;
 	FrameSize target_h = nearestInteger(scaled_h * mTargetWidth->value() / cropW);
 	FrameSize target_h_mult = nearestMultiple(target_h, mHSnap->value());
 	if (target_h <= 0 || target_h_mult <= 0) {
