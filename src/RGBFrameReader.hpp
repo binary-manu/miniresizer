@@ -1,14 +1,13 @@
 #ifndef RGB_FRAME_READER_HPP
 #define RGB_FRAME_READER_HPP
 
-
 #include <vector>
 
 extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-#include <libavutil/imgutils.h>
+	#include <libavformat/avformat.h>
+	#include <libavcodec/avcodec.h>
+	#include <libswscale/swscale.h>
+	#include <libavutil/imgutils.h>
 }
 
 #include "Common.hpp"

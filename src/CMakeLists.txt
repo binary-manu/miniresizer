@@ -44,7 +44,13 @@ set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
 
 configure_file(config.h.in config.h)
 
-set(SOURCES miniresizer_core.cpp)
+set(SOURCES
+    PreviewWindow.cpp
+    ResizeWindow.cpp
+    RGBFrameReader.cpp
+    Controller.cpp
+    main.cpp
+)
 
 add_library(fltk INTERFACE)
 target_include_directories(fltk INTERFACE "${FLTK_INCLUDE_DIR}")
