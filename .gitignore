@@ -10,3 +10,4 @@ CMakeCache.txt
 *.exe
 *.obj
 Makefile
+/install_manifest.txt

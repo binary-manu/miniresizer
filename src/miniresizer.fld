@@ -1,19 +1,16 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0303 
-header_name {.hpp} 
+version 1.0305
+header_name {.hpp}
 code_name {.cpp}
-decl {\#include "Fl_Value_Output_3Digit.hpp"} {public global
-} 
-
 widget_class ResizeWindowBase {
   label MiniResizer open
-  private xywh {328 245 655 670} type Double
+  private xywh {826 253 655 670} type Double
   class Fl_Window visible
 } {
   decl {typedef Fl_Spinner CropWidgetType;} {protected local
   }
   Fl_Group {} {
-    label {Input info}
+    label {Input info} open
     protected xywh {5 22 315 81} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Value_Output mInputWidth {
@@ -27,12 +24,12 @@ widget_class ResizeWindowBase {
     Fl_Value_Output mInputSar {
       label SAR
       protected xywh {60 67 90 25} value 1.25
-      class Fl_Value_Output_3Digit
+      code0 {mInputSar->precision(3);}
     }
     Fl_Value_Output mInputDar {
       label DAR
       protected xywh {220 67 90 25} value 1.778
-      class Fl_Value_Output_3Digit
+      code0 {mInputDar->precision(3);}
     }
   }
   Fl_Group {} {
@@ -84,7 +81,7 @@ widget_class ResizeWindowBase {
     Fl_Value_Output mPar {
       label PAR
       protected xywh {379 80 60 25}
-      class Fl_Value_Output_3Digit
+      code0 {mPar->precision(3);}
     }
     Fl_Spinner mTargetWidth {
       label {Target Width}
@@ -101,7 +98,7 @@ widget_class ResizeWindowBase {
     Fl_Value_Output mResizeError {
       label {Relative error}
       protected xywh {440 169 108 25}
-      class Fl_Value_Output_3Digit
+      code0 {mResizeError->precision(3);}
     }
     Fl_Value_Output mPixelDelta {
       label {Pixel delta}
@@ -117,7 +114,7 @@ widget_class ResizeWindowBase {
       protected tooltip {Shows a solid border around the preview to ease cropping} xywh {398 283 136 25} down_box BORDER_BOX
     } {}
     Fl_Check_Button mZoomIn {
-      label Enlarge selected
+      label Enlarge
       protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {548 320 80 25} down_box DOWN_BOX
     }
     Fl_Value_Slider mZoomMultiplier {
@@ -129,7 +126,7 @@ widget_class ResizeWindowBase {
     xywh {5 360 25 5}
   }
   Fl_Group {} {
-    label Filtergraph open
+    label Filtergraph
     protected xywh {5 385 645 280} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Text_Editor mFgSource {
@@ -147,10 +144,10 @@ widget_class ResizeWindowBase {
       xywh {15 506 125 25}
     }
   }
-} 
+}
 
 widget_class PreviewWindowBase {
-  label Preview
+  label Preview open
   private xywh {666 319 485 325} type Double hide resizable
   class Fl_Window
 } {
@@ -164,4 +161,4 @@ widget_class PreviewWindowBase {
   Fl_Group {} {open
     protected xywh {7 272 471 1} hide resizable
   } {}
-} 
+}
