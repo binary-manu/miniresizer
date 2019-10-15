@@ -45,6 +45,7 @@ set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
 configure_file(config.h.in config.h)
 
 set(SOURCES
+    Common.cpp
     PreviewWindow.cpp
     ResizeWindow.cpp
     RGBFrameReader.cpp

@@ -26,4 +26,8 @@ typedef int Position;
 // Type used for colors
 typedef Fl_Color Color;
 
+FrameSize nearestInteger(Ratio d);
+FrameSize nearestMultiple(FrameSize i, FrameSize step);
+FrameSize snapSize(FrameSize size, FrameSize snap);
+
 #endif // COMMON_HPP

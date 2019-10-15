@@ -293,14 +293,8 @@ void ResizeWindow::handleTargetWidthChange(Fl_Widget *w, void *_p) {
 void ResizeWindow::handleWSnapChange(Fl_Widget *w, void *_p) {
 	ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
 	const FrameSize snap = p->mWSnap->value();
-	FrameSize newSize = nearestMultiple(
-		p->mTargetWidth->value(), snap
-	);
-	if (newSize < snap) {
-		newSize = snap;
-	}
 	p->mTargetWidth->step(snap);
-	p->mTargetWidth->value(newSize);
+	p->mTargetWidth->value(snapSize(p->mTargetWidth->value(), snap));
 	p->evaluate();
 }
 
@@ -311,18 +305,6 @@ void ResizeWindow::genericHandler(Fl_Widget *w, void *_p) {
 
 void ResizeWindow::handleClose(Fl_Widget *w, void *_p) {
 	exit(0);
-}
-
-FrameSize ResizeWindow::nearestInteger(Ratio d) {
-	d = abs(d);
-	return (d - floor(d) <= 0.5) ? floor(d) : ceil(d);
-}
-	
-FrameSize ResizeWindow::nearestMultiple(FrameSize i, FrameSize step) {
-	FrameSize min = i / step * step;
-	FrameSize max = min + step;
-	Ratio mid = min + Ratio(step) / 2;
-	return (i > mid) ? max : min;
 }
 	
 void ResizeWindow::evaluate(bool doCallback) {
@@ -572,4 +554,12 @@ bool ResizeWindow::IsZoomEnlarging() const {
 ResizeWindow& ResizeWindow::SetTargetWidth(FrameSize width) {
 	mTargetWidth->value(width);
 	return *this;
+}
+
+FrameSize ResizeWindow::GetWSnap() const {
+	return mWSnap->value();
+}
+
+FrameSize ResizeWindow::GetHSnap() const {
+	return mHSnap->value();
 }

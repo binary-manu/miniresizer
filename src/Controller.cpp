@@ -10,7 +10,8 @@ Controller::Controller(RGBFrameReader *rgb, ResizeWindow *resize, PreviewWindow 
     mResize->SetOnResizeListener(this);
     mPreview->SetOnSeekListener(this);
     const FrameSize w = mRGB->GetFrameWidth();
-    mResize->SetTargetWidth((w) ? w : 1);
+	const FrameSize snap = resize->GetWSnap();
+    mResize->SetTargetWidth(snapSize(w, snap));
     mPreview->TriggerUpdate();
 }
 

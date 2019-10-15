@@ -2,6 +2,7 @@
 #define	RESIZE_WINDOW_HPP
 
 #include <vector>
+
 #include "resize.h"
 #include "Common.hpp"
 
@@ -41,6 +42,8 @@ public:
 	FrameSize GetCroppedHeight() const;
 	FrameSize GetResizedWidth() const;
 	FrameSize GetResizedHeight() const;
+	FrameSize GetWSnap() const;
+	FrameSize GetHSnap() const;
 	Color GetBorderColor() const;
 	bool HasBorder() const;
 	Ratio GetZoom() const;
@@ -75,8 +78,7 @@ private:
 	static void handleClose(Fl_Widget *w, void *_p);
 	static void handleWSnapChange(Fl_Widget *w, void *_p);
 	static void genericHandler(Fl_Widget *w, void *_p);
-	static FrameSize nearestInteger(Ratio d);
-	static FrameSize nearestMultiple(FrameSize i, FrameSize step);
+
 #ifdef ENABLE_FILTERGRAPH
 	static void saveFiltergraph(Fl_Widget *w, void *_p);
 
