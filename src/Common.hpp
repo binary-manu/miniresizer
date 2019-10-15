@@ -1,7 +1,9 @@
 #ifndef COMMON_HPP
 #define	COMMON_HPP
 
+#include <stdint.h>
 #include <stdexcept>
+
 #include <FL/Enumerations.H>
 
 template <typename Base, typename tag>

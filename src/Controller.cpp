@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Controller.hpp"
 
 Controller::Controller(RGBFrameReader *rgb, ResizeWindow *resize, PreviewWindow *preview) {
@@ -41,8 +43,8 @@ void Controller::draw() {
     
     try {
         const Ratio zoomRatio = (mResize->IsZoomEnlarging()) ? mResize->GetZoom() : (1.0 / mResize->GetZoom());
-        const FrameSize w = ceil(mResize->GetResizedWidth() * zoomRatio);
-        const FrameSize h = ceil(mResize->GetResizedHeight() * zoomRatio);
+        const FrameSize w = std::ceil(mResize->GetResizedWidth() * zoomRatio);
+        const FrameSize h = std::ceil(mResize->GetResizedHeight() * zoomRatio);
         const FrameSize croppedW = mResize->GetCroppedWidth();
         const FrameSize croppedH = mResize->GetCroppedHeight();
 

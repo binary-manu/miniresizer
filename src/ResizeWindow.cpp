@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 
 #include "config.h"
 
@@ -36,7 +36,7 @@ FrameSize ResizeWindow::GetInputWidth() const {
 }
 
 ResizeWindow& ResizeWindow::SetInputDar(Ratio dar) {
-	if (dar <= 0 || !isfinite(dar)) {
+	if (dar <= 0 || !std::isfinite(dar)) {
 		throw InvalidValueException("Cannot set input frame DAR to non-positive or non-finite value");
 	}
 	mInputDar->value(dar);
@@ -342,7 +342,7 @@ void ResizeWindow::evaluate(bool doCallback) {
 	mResizedHeight->value(target_h_mult);
 	mResizeError->value((Ratio(target_h_mult) - target_h) / target_h);
 
-	const FrameSize delta_h = abs(target_h_mult - target_h);
+	const FrameSize delta_h = std::abs(target_h_mult - target_h);
 	mPixelDelta->value(delta_h);
 
 #ifdef ENABLE_FILTERGRAPH

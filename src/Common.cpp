@@ -1,10 +1,10 @@
-#include <math.h>
+#include <cmath>
 
 #include "Common.hpp"
 
 FrameSize nearestInteger(Ratio d) {
-	d = abs(d);
-	return (d - floor(d) <= 0.5) ? floor(d) : ceil(d);
+	d = std::abs(d);
+	return (d - std::floor(d) <= 0.5) ? std::floor(d) : std::ceil(d);
 }
 	
 FrameSize nearestMultiple(FrameSize i, FrameSize step) {

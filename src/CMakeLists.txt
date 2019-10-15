@@ -56,12 +56,11 @@ set(SOURCES
     main.cpp
 )
 
-add_library(fltk INTERFACE)
-target_include_directories(fltk INTERFACE "${FLTK_INCLUDE_DIR}")
-target_link_libraries(fltk INTERFACE "${FLTK_LIBRARY}")
+add_library(fltk_lib INTERFACE)
+target_include_directories(fltk_lib INTERFACE "${FLTK_INCLUDE_DIR}")
+target_link_libraries(fltk_lib INTERFACE "${FLTK_LIBRARY}")
 
 add_library(fltk_ui OBJECT ${miniresizer_FLTK_UI_SRCS})
-target_link_libraries(fltk_ui PUBLIC fltk)
 
 #[[
 add_library(ffmpeg INTERFACE)
@@ -70,10 +69,10 @@ target_link_libraries(ffmpeg INTERFACE "${FFMPEG_LIBRARY}")
 #target_compile_options(ffmpeg INTERFACE -Wno-deprecated-declarations)
 ]]
 
-add_executable(miniresizer ${SOURCES})
+add_executable(miniresizer ${SOURCES} $<TARGET_OBJECTS:fltk_ui>)
 target_link_libraries(miniresizer PRIVATE
     FFMPEG_avcodec FFMPEG_avformat FFMPEG_swscale FFMPEG_avutil
-    fltk fltk_ui
+    fltk_lib
 )
 
 if(WIN32)
@@ -93,7 +92,7 @@ else()
     install(FILES res/desktop/miniresizer.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 endif()
 
-install(TARGETS miniresizer)
+install(TARGETS miniresizer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 message("
 =====================================================

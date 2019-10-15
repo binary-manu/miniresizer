@@ -1,8 +1,8 @@
 #ifndef PREVIEW_WINDOW_HPP
 #define PREVIEW_WINDOW_HPP
 
-#include <stdint.h>
 #include <vector>
+
 #include "preview.h"
 #include "Common.hpp"
 
