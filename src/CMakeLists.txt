@@ -2,7 +2,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 
 include(CheckIncludeFileCXX)
 include(GNUInstallDirs)
-include(find_helpers)
+include(Options)
 
 option_add_list(ENABLE_FILTERGRAPH "Enable filtergraph expansion" "wordexp" "none;wordexp;builtin")
 
@@ -18,15 +18,18 @@ if("${OPTION_ENABLE_FILTERGRAPH}" STREQUAL "wordexp")
     endif()
 endif()
 
-
+#[[
 find_library_or_exit(LIBAVCODEC avcodec)
 find_library_or_exit(LIBAVFORMAT avformat)
 find_library_or_exit(LIBSWSCALE swscale)
 find_library_or_exit(LIBAVUTIL avutil)
 
 find_path_or_exit(FFMPEG_INCLUDE_DIR avcodec.h PATH_SUFFIXES libavcodec)
-get_filename_component(FFMPEG_INCLUDE_DIR ${FFMPEG_INCLUDE_DIR} DIRECTORY CACHE)
+eet_filename_component(FFMPEG_INCLUDE_DIR ${FFMPEG_INCLUDE_DIR} DIRECTORY CACHE)
 set(FFMPEG_LIBRARY ${LIBAVCODEC} ${LIBAVFORMAT} ${LIBAVUTIL} ${LIBSWSCALE})
+]]
+
+find_package(FFMPEG MODULE REQUIRED COMPONENTS avformat avutil swscale avcodec)
 
 set(FLTK_SKIP_OPENGL ON)
 set(FLTK_SKIP_FORMS ON)
@@ -60,13 +63,18 @@ target_link_libraries(fltk INTERFACE "${FLTK_LIBRARY}")
 add_library(fltk_ui OBJECT ${miniresizer_FLTK_UI_SRCS})
 target_link_libraries(fltk_ui PUBLIC fltk)
 
+#[[
 add_library(ffmpeg INTERFACE)
 target_include_directories(ffmpeg INTERFACE "${FFMPEG_INCLUDE_DIR}")
 target_link_libraries(ffmpeg INTERFACE "${FFMPEG_LIBRARY}")
 #target_compile_options(ffmpeg INTERFACE -Wno-deprecated-declarations)
+]]
 
 add_executable(miniresizer ${SOURCES})
-target_link_libraries(miniresizer PRIVATE ffmpeg fltk fltk_ui)
+target_link_libraries(miniresizer PRIVATE
+    FFMPEG_avcodec FFMPEG_avformat FFMPEG_swscale FFMPEG_avutil
+    fltk fltk_ui
+)
 
 if(WIN32)
     set(windres_names windres)
