@@ -1,5 +1,7 @@
 #include <cmath>
 
+#include "config.h"
+
 #include "RGBFrameReader.hpp"
 
 RGBFrameReader::RGBFrameReader(const char* filename):
@@ -9,14 +11,13 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		mScaler(0),
 		mFrame(0)
 {
+#ifndef USE_NEW_AVCODEC_API
+	av_register_all();
+#endif
+ 
 	try {
 		avformat_open_input(&mFormatCtx, filename, 0, 0);
 		if (mFormatCtx == 0) {
-			throw AVException((std::string("Unable to open ") + filename).c_str());
-		}
-
-		mCodecCtx = avcodec_alloc_context3(NULL);
-		if (mCodecCtx == 0) {
 			throw AVException((std::string("Unable to open ") + filename).c_str());
 		}
 
@@ -30,9 +31,19 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		}
 		mVideoStream = mFormatCtx->streams[videoStream];
 
-		if (avcodec_parameters_to_context(mCodecCtx, mVideoStream->codecpar) < 0 ||
-			avcodec_open2(mCodecCtx, avcodec_find_decoder(
-				mVideoStream->codecpar->codec_id), 0) < 0) {
+#ifdef USE_NEW_AVCODEC_API
+		const AVCodecID codecId = mVideoStream->codecpar->codec_id;
+		mCodecCtx = avcodec_alloc_context3(NULL);
+		if (mCodecCtx == 0 ||
+		        avcodec_parameters_to_context(mCodecCtx, mVideoStream->codecpar) < 0) {
+			throw AVException((std::string("Unable to open ") + filename).c_str());
+		}
+#else
+		const AVCodecID codecId = mVideoStream->codec->codec_id;
+		mCodecCtx = mVideoStream->codec;
+#endif
+
+		if (avcodec_open2(mCodecCtx, avcodec_find_decoder(codecId), 0) < 0) {
 			throw AVException((std::string("Unable to open ") + filename).c_str());
 		}
 		if (mCodecCtx->height <= 0 || mCodecCtx->width <= 0) {
@@ -73,7 +84,11 @@ void RGBFrameReader::close() {
 		sws_freeContext(mScaler);
 	}
 	if (mCodecCtx) {
+#ifdef USE_NEW_AVCODEC_API
 		avcodec_free_context(&mCodecCtx);
+#else 
+		avcodec_close(mCodecCtx);
+#endif
 	}
 	if (mFormatCtx) {
 		avformat_close_input(&mFormatCtx);
@@ -132,6 +147,7 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
 	pkt.size = 0;
 	
 	do {
+#ifdef USE_NEW_AVCODEC_API
 		int what = av_read_frame(mFormatCtx, &pkt);
 		if (what < 0) {
 			if (what == AVERROR_EOF) {
@@ -156,6 +172,30 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
 		} else if (what != AVERROR(EAGAIN)) {
 			throw AVException("AV frame decode error");
 		}
+#else
+		int what = av_read_frame(mFormatCtx, &pkt);
+		if (what < 0) {
+			if (what == AVERROR_EOF) {
+				return DR_EOF;
+			}
+			throw AVException("AV frame read error");
+		}
+		if (pkt.stream_index != mVideoStream->index) {
+			av_free_packet(&pkt);
+			continue;
+		}
+
+		int got;
+		what = avcodec_decode_video2(mVideoStream->codec, mFrame, &got, &pkt);
+		if (what < 0) {
+			av_free_packet(&pkt);
+			throw AVException("AV frame decode error");
+		}
+		av_free_packet(&pkt);
+		if (got) {
+			break;
+		}
+#endif
 	} while (true);
 	
 	// Got a frame
