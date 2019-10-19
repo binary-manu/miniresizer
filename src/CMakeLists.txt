@@ -50,6 +50,7 @@ target_link_libraries(fltk_lib INTERFACE "${FLTK_LIBRARY}")
 add_library(fltk_ui OBJECT ${miniresizer_FLTK_UI_SRCS})
 
 include(FFMPEGNewAVCodecAPI)
+include(FFMPEGCallAVRegisterAll)
 
 configure_file(config.h.in config.h)
 

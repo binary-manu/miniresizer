@@ -11,7 +11,7 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		mScaler(0),
 		mFrame(0)
 {
-#ifndef FFMPEG_USE_NEW_AVCODEC_API
+#ifdef FFMPEG_CALL_AV_REGISTER_ALL
 	av_register_all();
 #endif
  
