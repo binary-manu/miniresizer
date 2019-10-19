@@ -1,6 +1,6 @@
 include(CheckCXXSourceRuns)
 
-if(NOT DEFINED USE_NEW_AVCODEC_API)
+if(NOT DEFINED FFMPEG_USE_NEW_AVCODEC_API)
     message(STATUS "Checking if we should use the new packet decoding API")
     get_target_property(CMAKE_REQUIRED_INCLUDES FFMPEG_avcodec INTERFACE_INCLUDE_DIRECTORIES)
     get_target_property(CMAKE_REQUIRED_LIBRARIES FFMPEG_avcodec INTERFACE_LINK_LIBRARIES)
@@ -14,9 +14,9 @@ if(NOT DEFINED USE_NEW_AVCODEC_API)
             }
         ]]
 
-        USE_NEW_AVCODEC_API
+        FFMPEG_USE_NEW_AVCODEC_API
     )
-    if(USE_NEW_AVCODEC_API) 
+    if(FFMPEG_USE_NEW_AVCODEC_API) 
         message(STATUS "Checking if we should use the new packet decoding API - yes")
     else()
         message(STATUS "Checking if we should use the new packet decoding API - no")

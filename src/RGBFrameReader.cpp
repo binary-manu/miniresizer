@@ -11,7 +11,7 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		mScaler(0),
 		mFrame(0)
 {
-#ifndef USE_NEW_AVCODEC_API
+#ifndef FFMPEG_USE_NEW_AVCODEC_API
 	av_register_all();
 #endif
  
@@ -31,7 +31,7 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		}
 		mVideoStream = mFormatCtx->streams[videoStream];
 
-#ifdef USE_NEW_AVCODEC_API
+#ifdef FFMPEG_USE_NEW_AVCODEC_API
 		const AVCodecID codecId = mVideoStream->codecpar->codec_id;
 		mCodecCtx = avcodec_alloc_context3(NULL);
 		if (mCodecCtx == 0 ||
@@ -84,7 +84,7 @@ void RGBFrameReader::close() {
 		sws_freeContext(mScaler);
 	}
 	if (mCodecCtx) {
-#ifdef USE_NEW_AVCODEC_API
+#ifdef FFMPEG_USE_NEW_AVCODEC_API
 		avcodec_free_context(&mCodecCtx);
 #else 
 		avcodec_close(mCodecCtx);
@@ -147,7 +147,7 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
 	pkt.size = 0;
 	
 	do {
-#ifdef USE_NEW_AVCODEC_API
+#ifdef FFMPEG_USE_NEW_AVCODEC_API
 		int what = av_read_frame(mFormatCtx, &pkt);
 		if (what < 0) {
 			if (what == AVERROR_EOF) {
