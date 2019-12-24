@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <vector>
+#include <memory>
 
 #include "Controller.hpp"
 
@@ -51,66 +52,57 @@ void Controller::draw() {
     uint8_t *outScale[4] = {nullptr};
     int outLines[4] = {0};
 
-    try {
-        const Ratio zoomRatio = (mResize->IsZoomEnlarging()) ? mResize->GetZoom() : (1.0 / mResize->GetZoom());
-        const FrameSize w = std::ceil(mResize->GetResizedWidth() * zoomRatio);
-        const FrameSize h = std::ceil(mResize->GetResizedHeight() * zoomRatio);
-        const FrameSize croppedW = mResize->GetCroppedWidth();
-        const FrameSize croppedH = mResize->GetCroppedHeight();
+    const Ratio zoomRatio = (mResize->IsZoomEnlarging()) ? mResize->GetZoom() : (1.0 / mResize->GetZoom());
+    const FrameSize w = std::ceil(mResize->GetResizedWidth() * zoomRatio);
+    const FrameSize h = std::ceil(mResize->GetResizedHeight() * zoomRatio);
+    const FrameSize croppedW = mResize->GetCroppedWidth();
+    const FrameSize croppedH = mResize->GetCroppedHeight();
 
-        scaler = sws_getCachedContext(
-            nullptr,
-            croppedW, croppedH, AV_PIX_FMT_RGB24,
-            w, h, AV_PIX_FMT_RGB24,
-            SWS_FAST_BILINEAR, nullptr, nullptr, nullptr
-        );
-        if (!scaler) {
-            throw ResourceAllocationException("Cannot allocate SwsContext");
-        }
-
-        std::vector<uint8_t> scaled;
-        scaled.resize(croppedW * croppedH * 3);
-        uint8_t *inScale[4] = {nullptr};
-        inScale[0] = &scaled[0];
-        int inLines[4] = {0};
-        inLines[0] = croppedW * 3;
-
-
-        if (av_image_alloc(outScale, outLines, w, h, AV_PIX_FMT_RGB24, 1) < 0) {
-            throw ResourceAllocationException("Cannot allocate image");
-        }
-
-        // Crop
-        const uint8_t *src = mRGB->GetFrameData();
-        uint8_t *dst = inScale[0];
-
-        // Skip cropped top lines
-        src += mRGB->GetFrameWidth() * 3 * mResize->GetCropTop();
-
-        const FrameSize cropLeft = mResize->GetCropLeft() * 3;
-        const FrameSize lineSize = mRGB->GetFrameWidth() * 3;
-        for (size_t i = croppedH; i > 0; i--) {
-            memcpy(dst, src + cropLeft, inLines[0]);
-            dst += inLines[0];
-            src += lineSize;
-        }
-        if (sws_scale(scaler, inScale, inLines, 0, croppedH, outScale, outLines) < 0) {
-            throw AVException("Cannot scale image");
-        }
-        if (mResize->HasBorder()) {
-            mPreview->SetBorderColor(mResize->GetBorderColor());
-        } else {
-            mPreview->ClearBorder();
-        }
-        mPreview->DrawPicture(outScale[0], w, h);
-        sws_freeContext(scaler);
-        scaler = nullptr;
-        av_freep(&outScale[0]);
-    } catch (... ) {
-        if (scaler) {
-            sws_freeContext(scaler);
-        }
-        av_freep(outScale[0]);
-        throw;
+    scaler = sws_getCachedContext(
+        nullptr,
+        croppedW, croppedH, AV_PIX_FMT_RGB24,
+        w, h, AV_PIX_FMT_RGB24,
+        SWS_FAST_BILINEAR, nullptr, nullptr, nullptr
+    );
+    if (!scaler) {
+        throw ResourceAllocationException("Cannot allocate SwsContext");
     }
+    std::unique_ptr<SwsContext, typeof(&sws_freeContext)> freeScaler {scaler, &sws_freeContext};
+
+    std::vector<uint8_t> scaled;
+    scaled.resize(croppedW * croppedH * 3);
+    uint8_t *inScale[4] = {nullptr};
+    inScale[0] = &scaled[0];
+    int inLines[4] = {0};
+    inLines[0] = croppedW * 3;
+
+
+    if (av_image_alloc(outScale, outLines, w, h, AV_PIX_FMT_RGB24, 1) < 0) {
+        throw ResourceAllocationException("Cannot allocate image");
+    }
+    std::unique_ptr<uint8_t*, typeof(&av_freep)> freeData {&outScale[0], &av_freep};
+
+    // Crop
+    const uint8_t *src = mRGB->GetFrameData();
+    uint8_t *dst = inScale[0];
+
+    // Skip cropped top lines
+    src += mRGB->GetFrameWidth() * 3 * mResize->GetCropTop();
+
+    const FrameSize cropLeft = mResize->GetCropLeft() * 3;
+    const FrameSize lineSize = mRGB->GetFrameWidth() * 3;
+    for (size_t i = croppedH; i > 0; i--) {
+        memcpy(dst, src + cropLeft, inLines[0]);
+        dst += inLines[0];
+        src += lineSize;
+    }
+    if (sws_scale(scaler, inScale, inLines, 0, croppedH, outScale, outLines) < 0) {
+        throw AVException("Cannot scale image");
+    }
+    if (mResize->HasBorder()) {
+        mPreview->SetBorderColor(mResize->GetBorderColor());
+    } else {
+        mPreview->ClearBorder();
+    }
+    mPreview->DrawPicture(outScale[0], w, h);
 }

@@ -11,6 +11,7 @@
 #include <cmath>
 #include <sstream>
 #include <string>
+#include <memory>
 
 ResizeWindow& ResizeWindow::SetInputHeight(FrameSize inputHeight) {
     if (inputHeight <= 0) {
@@ -142,17 +143,13 @@ ResizeWindow::ResizeWindow():
     mMakeDefaultFg->callback(&saveFiltergraph, this);
     Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
     Fl_Preferences defaultGroup(prefs, "default");
-    char *fg;
+    char *fg {nullptr};
     defaultGroup.get("filtergraph", fg, "");
-    if (!fg) {
+    std::unique_ptr<char, typeof(&free)> pfg {fg, &free};
+    if (!pfg) {
         throw ResourceAllocationException("Unable to allocate space for reading the settings");
     }
-    try {
-        mFgSource->buffer()->text(fg);
-        free(fg);
-    } catch (...) {
-        free(fg);
-    }
+    mFgSource->buffer()->text(pfg.get());
 #else
     h(mAboveFg->y());
 #endif
@@ -456,17 +453,13 @@ bool ResizeWindow::expandHelper(const std::string& filter, std::string& expansio
     filterSource.push_back('\u0022');
     filterSource += filter;
     filterSource.push_back('\u0022');
-    if (wordexp(filterSource.c_str(), &we, 0) || we.we_wordc != 1) {
+    const int weNok = wordexp(filterSource.c_str(), &we, 0);
+    std::unique_ptr<wordexp_t, typeof(&wordfree)> pwe {&we, &wordfree};
+    if (weNok || we.we_wordc != 1) {
         return false;
     }
 
-    try {
-        expansion = we.we_wordv[0];
-    } catch (...) {
-        wordfree(&we);
-        throw;
-    }
-    wordfree(&we);
+    expansion = we.we_wordv[0];
     return true;
 }
 
@@ -494,12 +487,11 @@ void ResizeWindow::expandFiltergraph() {
     const int filterLength = mFgSource->buffer()->length();
     std::string filter;
     filter.reserve(filterLength);
-    char* filterC = mFgSource->buffer()->text();
+    std::unique_ptr<char, typeof(&free)> filterC {mFgSource->buffer()->text(), &free};
     if (!filterC) {
         throw ResourceAllocationException("Unable to get filtergraph source in textual form for processing");
     }
-    filter = filterC;
-    free(filterC);
+    filter = filterC.get();
 
     std::string expansion;
     if (!expandHelper(filter, expansion)) {
@@ -514,16 +506,13 @@ void ResizeWindow::expandFiltergraph() {
 void ResizeWindow::saveFiltergraph(Fl_Widget * /*w*/, void *_p) {
     Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
     Fl_Preferences defaultGroup(prefs, "default");
-    char *fg = static_cast<ResizeWindow*>(_p)->mFgSource->buffer()->text();
+    std::unique_ptr<char, typeof(&free)> fg {
+        static_cast<ResizeWindow*>(_p)->mFgSource->buffer()->text(), &free
+    };
     if (!fg) {
         throw ResourceAllocationException("Memory allocation failed");
     }
-    try {
-        defaultGroup.set("filtergraph", fg);
-        free(fg);
-    } catch (...) {
-        free(fg);
-    }
+    defaultGroup.set("filtergraph", fg.get());
 }
 
 #endif

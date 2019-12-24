@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <string>
+#include <memory>
 
 #include "./config.h"
 
@@ -181,18 +182,16 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
             }
             throw AVException("AV frame read error");
         }
+        std::unique_ptr<AVPacket, typeof(&av_free_packet)> ppkt {&pkt, &av_packet_free};
         if (pkt.stream_index != mVideoStream->index) {
-            av_free_packet(&pkt);
             continue;
         }
 
         int got;
         what = avcodec_decode_video2(mVideoStream->codec, mFrame, &got, &pkt);
         if (what < 0) {
-            av_free_packet(&pkt);
             throw AVException("AV frame decode error");
         }
-        av_free_packet(&pkt);
         if (got) {
             break;
         }
@@ -207,16 +206,15 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
             mCodecCtx->height, AV_PIX_FMT_RGB24, 1) < 0) {
         throw ResourceAllocationException("Cannot convert frame to RGB");
     }
+    std::unique_ptr<uint8_t*, typeof(&av_freep)> freeData {&rgbData[0], &av_freep};
 
     if (sws_scale(mScaler, mFrame->data, mFrame->linesize, 0,
             mCodecCtx->height, rgbData, rgbLinesize) < 0) {
-        av_freep(&rgbData[0]);
         throw AVException("AV frame scale error");
     }
 
     mFrameData.resize(rgbLinesize[0] * mCodecCtx->height);
     memcpy(&mFrameData[0], rgbData[0], mFrameData.size());
-    av_freep(&rgbData[0]);
 
     return DR_OK;
 }
