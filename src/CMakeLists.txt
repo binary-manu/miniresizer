@@ -31,8 +31,10 @@ endif()
 
 fltk_wrap_ui(miniresizer preview.fld resize.fld)
 
-set(PACKAGE_NAME "${PROJECT_NAME}")
-set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
+# The package name must be in CamelCase, becuase it is used to name the FLTK
+# preference file, and until now it was typed that way.
+set(PACKAGE_NAME "MiniResizer")
+set(PACKAGE_STRING "${PACKAGE_NAME} ${PROJECT_VERSION}")
 
 set(SOURCES
     Common.cpp
