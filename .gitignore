@@ -13,3 +13,4 @@ CMakeCache.txt
 *.obj
 Makefile
 /install_manifest.txt
+/.clangd/

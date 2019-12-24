@@ -1,7 +1,7 @@
 #ifndef COMMON_HPP
-#define	COMMON_HPP
+#define COMMON_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <stdexcept>
 
 #include <FL/Enumerations.H>
@@ -9,24 +9,24 @@
 template <typename Base, typename tag>
 class Exception : public Base {
 public:
-	Exception(const char* what): Base(what) {}
+    explicit Exception(const char* what): Base(what) {}
 };
 
-typedef Exception<std::logic_error, struct MRExceptionTag> MRException;
-typedef Exception<MRException, struct MRNonSevereExceptiongTag> MRNonSevereException;
-typedef Exception<MRException, struct MRSevereExceptiongTag> MRSevereException;
-typedef Exception<MRSevereException, struct InvalidValueExceptionTag> InvalidValueException;
-typedef Exception<MRNonSevereException, struct ResourceAllocationTag> ResourceAllocationException;
-typedef Exception<MRNonSevereException, struct AVExceptionTag> AVException;
+using MRException = Exception<std::logic_error, struct MRExceptionTag>;
+using MRNonSevereException = Exception<MRException, struct MRNonSevereExceptiongTag>;
+using MRSevereException = Exception<MRException, struct MRSevereExceptiongTag>;
+using InvalidValueException = Exception<MRSevereException, struct InvalidValueExceptionTag>;
+using ResourceAllocationException = Exception<MRNonSevereException, struct ResourceAllocationTag>;
+using AVException = Exception<MRNonSevereException, struct AVExceptionTag>;
 
 // Type used to store frame width/height
-typedef int FrameSize;
+using FrameSize = int;
 // Type used to represent ratios
-typedef double Ratio;
+using Ratio = double;
 // Type to represent positions/frame numbers
-typedef int Position;
+using Position = int;
 // Type used for colors
-typedef Fl_Color Color;
+using Color = Fl_Color;
 
 FrameSize nearestInteger(Ratio d);
 FrameSize nearestMultiple(FrameSize i, FrameSize step);
