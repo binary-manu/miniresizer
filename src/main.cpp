@@ -9,6 +9,11 @@
 
 
 int main(int argc, char **argv) {	
+
+#ifdef FFMPEG_CALL_AV_REGISTER_ALL
+    av_register_all();
+#endif  // FFMPEG_CALL_AV_REGISTER_ALL
+
 	Fl::visual(FL_RGB);
 	
 	const char* filename = NULL;

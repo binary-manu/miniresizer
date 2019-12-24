@@ -11,10 +11,6 @@ RGBFrameReader::RGBFrameReader(const char* filename):
 		mScaler(0),
 		mFrame(0)
 {
-#ifdef FFMPEG_CALL_AV_REGISTER_ALL
-	av_register_all();
-#endif
- 
 	try {
 		avformat_open_input(&mFormatCtx, filename, 0, 0);
 		if (mFormatCtx == 0) {
