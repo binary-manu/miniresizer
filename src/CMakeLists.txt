@@ -73,7 +73,7 @@ if(WIN32)
     target_sources(miniresizer PRIVATE res/win/winres.rc)
 else()
     # Copy icons and desktop file
-    foreach(size 16x16 24x24 32x32 48x48 64x64 72x72 96x96 128x128)
+    foreach(size 16x16 24x24 32x32 64x64 128x128)
         install(DIRECTORY res/icons/${size} DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor)
     endforeach()
     install(FILES res/desktop/miniresizer.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
