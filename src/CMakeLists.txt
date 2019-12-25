@@ -74,7 +74,7 @@ if(WIN32)
 else()
     # Copy icons and desktop file
     foreach(size 16x16 24x24 32x32 64x64 128x128)
-        install(DIRECTORY res/icons/${size} DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor)
+        install(FILES res/icons/${size}/miniresizer.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/${size}/apps/)
     endforeach()
     install(FILES res/desktop/miniresizer.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 endif()
