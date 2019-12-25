@@ -9,6 +9,9 @@
 #include "RGBFrameReader.hpp"
 #include "Controller.hpp"
 
+namespace {
+    #include "res/icons/app-icon.xpm"
+}
 
 int main(int argc, char **argv) {
 
@@ -16,7 +19,12 @@ int main(int argc, char **argv) {
     av_register_all();
 #endif  // FFMPEG_CALL_AV_REGISTER_ALL
 
-    Fl::visual(FL_RGB);
+    {
+        Fl::visual(FL_RGB);
+        Fl_Pixmap iconPixmap { app_icon };
+        Fl_RGB_Image defaultIcon { &iconPixmap, FL_WHITE };
+        Fl_Window::default_icon(&defaultIcon);
+    }
 
     const char* filename = nullptr;
     if (argc > 1 && argv[1] != nullptr && *argv[1] != '\0') {
