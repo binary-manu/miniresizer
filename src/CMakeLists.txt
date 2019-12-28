@@ -1,4 +1,6 @@
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 11)
 
 include(CheckIncludeFileCXX)
 include(GNUInstallDirs)
@@ -50,6 +52,7 @@ target_include_directories(fltk_lib INTERFACE "${FLTK_INCLUDE_DIR}")
 target_link_libraries(fltk_lib INTERFACE "${FLTK_LIBRARY}")
 
 add_library(fltk_ui OBJECT ${miniresizer_FLTK_UI_SRCS})
+target_include_directories(fltk_ui PRIVATE "${FLTK_INCLUDE_DIR}")
 
 include(FFMPEGNewAVCodecAPI)
 include(FFMPEGCallAVRegisterAll)
@@ -67,7 +70,10 @@ if(WIN32)
     if(ARCH)
         list(APPEND windres_names ${ARCH}-windres)
     endif()
-    find_program_or_exit(WINDRES NAMES ${windres_names})
+    find_program(WINDRES NAMES ${windres_names})
+    if(NOT WINDRES)
+        message(FATAL_ERROR "Cannot find the Windows Resource Compiler")
+    endif()
     set(CMAKE_RC_COMPILER ${WINDRES} CACHE PATH "Windows RC compiler" FORCE)
 
     target_sources(miniresizer PRIVATE res/win/winres.rc)
