@@ -182,7 +182,7 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
             }
             throw AVException("AV frame read error");
         }
-        std::unique_ptr<AVPacket, typeof(&av_free_packet)> ppkt {&pkt, &av_packet_free};
+        std::unique_ptr<AVPacket, typeof(&av_free_packet)> ppkt {&pkt, &av_free_packet};
         if (pkt.stream_index != mVideoStream->index) {
             continue;
         }
