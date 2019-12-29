@@ -14,3 +14,4 @@ CMakeCache.txt
 Makefile
 /install_manifest.txt
 /.clangd/
+/src/win32-toolchain.cmake
