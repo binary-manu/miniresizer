@@ -1,0 +1,13 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0305
+header_name {resize.hpp}
+code_name {reszie.cpp}
+widget_class AboutWindowBase {
+  label {About MiniResizer} open
+  xywh {550 400 455 395} type Double
+  class Fl_Window visible
+} {
+  Fl_Help_View mMainText {selected
+    protected xywh {0 0 455 395}
+  }
+}

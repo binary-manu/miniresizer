@@ -88,6 +88,7 @@ private:
     static void handleClose(Fl_Widget *w, void *_p);
     static void handleWSnapChange(Fl_Widget *w, void *_p);
     static void genericHandler(Fl_Widget *w, void *_p);
+    static void handleAbout(Fl_Widget *w, void *_p);
 
 #ifdef ENABLE_FILTERGRAPH
     static void saveFiltergraph(Fl_Widget *w, void *_p);

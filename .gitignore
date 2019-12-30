@@ -3,6 +3,8 @@ preview.h
 resize.cxx
 resize.h
 config.h
+about.cxx
+about.h
 *.o
 miniresizer
 *.cmake

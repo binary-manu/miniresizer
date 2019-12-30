@@ -3,153 +3,175 @@ version 1.0305
 header_name {resize.hpp}
 code_name {reszie.cpp}
 widget_class ResizeWindowBase {
-  label MiniResizer open
-  private xywh {826 253 655 670} type Double
+  label MiniResizer open selected
+  private xywh {219 289 655 690} type Double
   class Fl_Window visible
 } {
   decl {typedef Fl_Spinner CropWidgetType;} {protected local
   }
+  Fl_Menu_Bar {} {open
+    protected xywh {0 0 655 24}
+  } {
+    Submenu {} {
+      label {&File} open
+      protected xywh {0 0 70 24}
+    } {
+      MenuItem mMenuFileQuit {
+        label {&Quit}
+        protected xywh {5 5 36 24}
+      }
+    }
+    Submenu {} {
+      label {&Help} open
+      protected xywh {0 0 70 24}
+    } {
+      MenuItem mMenuHelpAbout {
+        label {&About}
+        protected xywh {5 5 36 24}
+      }
+    }
+  }
   Fl_Group {} {
     label {Input info} open
-    protected xywh {5 22 315 81} box PLASTIC_UP_FRAME align 5
+    protected xywh {5 47 315 81} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Value_Output mInputWidth {
       label Width
-      protected xywh {60 32 90 25} value 720
+      protected xywh {60 57 90 25} value 720
     }
     Fl_Value_Output mInputHeight {
       label Height
-      protected xywh {220 32 90 25} value 576
+      protected xywh {220 57 90 25} value 576
     }
     Fl_Value_Output mInputSar {
       label SAR
-      protected xywh {60 67 90 25} value 1.25
+      protected xywh {60 92 90 25} value 1.25
       code0 {mInputSar->precision(3);}
     }
     Fl_Value_Output mInputDar {
       label DAR
-      protected xywh {220 67 90 25} value 1.778
+      protected xywh {220 92 90 25} value 1.778
       code0 {mInputDar->precision(3);}
     }
   }
   Fl_Group {} {
     label {Crop Control}
-    protected xywh {5 134 315 219} box PLASTIC_UP_FRAME align 5
+    protected xywh {5 159 315 219} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Value_Input mCropAlign {
       label {Crop Snap}
-      protected xywh {90 144 45 25} minimum 1 maximum 16 step 1 value 2
+      protected xywh {90 169 45 25} minimum 1 maximum 16 step 1 value 2
     }
     Fl_Spinner mCropTop {
       label {Top Crop}
-      protected xywh {128 194 65 25} align 1 when 1 minimum -128 maximum 999999 step 2 value 0
+      protected xywh {128 219 65 25} align 1 when 1 minimum -128 maximum 999999 step 2 value 0
     }
     Fl_Spinner mCropLeft {
       label {Left Crop}
-      protected xywh {90 230 65 25} when 1 minimum -128 maximum 999999 step 2 value 0
+      protected xywh {90 255 65 25} when 1 minimum -128 maximum 999999 step 2 value 0
     }
     Fl_Spinner mCropRight {
       label {Right Crop}
-      protected xywh {165 230 65 25} align 8 when 1 minimum -128 maximum 999999 step 2 value 0
+      protected xywh {165 255 65 25} align 8 when 1 minimum -128 maximum 999999 step 2 value 0
     }
     Fl_Spinner mCropBottom {
       label {Bottom Crop}
-      protected xywh {128 265 65 25} align 2 when 1 minimum -128 maximum 999999 step 2 value 0
+      protected xywh {128 290 65 25} align 2 when 1 minimum -128 maximum 999999 step 2 value 0
     }
     Fl_Value_Output mCroppedWidth {
       label {After crop}
-      protected xywh {90 319 96 25}
+      protected xywh {90 344 96 25}
     }
     Fl_Value_Output mCroppedHeight {
       label x
-      protected xywh {201 319 109 26}
+      protected xywh {201 344 109 26}
     }
   }
   Fl_Group {} {
     label {Resize Control} open
-    protected xywh {335 22 315 216} box PLASTIC_UP_FRAME align 5
+    protected xywh {335 47 315 216} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Choice mDarChoice {
       label DAR open
-      protected xywh {379 34 90 25} down_box BORDER_BOX when 1
+      protected xywh {379 59 90 25} down_box BORDER_BOX when 1
     } {}
     Fl_Value_Input mDar {
       label {or type a value}
-      protected xywh {583 34 60 25} minimum 0.01 maximum 100 step 0.001 value 1.778 deactivate
+      protected xywh {583 59 60 25} minimum 0.01 maximum 100 step 0.001 value 1.778 deactivate
       code0 {mDar->precision(3);}
     }
     Fl_Value_Output mPar {
       label PAR
-      protected xywh {379 80 60 25}
+      protected xywh {379 105 60 25}
       code0 {mPar->precision(3);}
     }
     Fl_Spinner mTargetWidth {
       label {Target Width}
-      protected xywh {573 80 70 25} when 1 minimum -128 maximum 999999 step 16 value 704
+      protected xywh {573 105 70 25} when 1 minimum -128 maximum 999999 step 16 value 704
     }
     Fl_Value_Output mResizedWidth {
       label {Resize to}
-      protected xywh {414 130 60 25}
+      protected xywh {414 155 60 25}
     }
     Fl_Value_Output mResizedHeight {
       label x
-      protected xywh {488 131 60 25}
+      protected xywh {488 156 60 25}
     }
     Fl_Value_Output mResizeError {
       label {Relative error}
-      protected xywh {440 169 70 25}
+      protected xywh {440 194 70 25}
       code0 {mResizeError->precision(3);}
     }
     Fl_Value_Output mPixelDelta {
       label {Pixel delta}
-      protected xywh {440 204 70 25}
+      protected xywh {440 229 70 25}
     }
     Fl_Value_Input mWSnap {
       label {W Snap}
-      protected xywh {595 169 48 25} minimum 1 maximum 9999 step 1 value 16
+      protected xywh {595 194 48 25} minimum 1 maximum 9999 step 1 value 16
     }
     Fl_Value_Input mHSnap {
       label {H Snap}
-      protected xywh {595 204 48 25} minimum 1 maximum 9999 step 1 value 16
+      protected xywh {595 229 48 25} minimum 1 maximum 9999 step 1 value 16
     }
   }
   Fl_Group {} {
     label {Visual aids}
-    protected xywh {335 272 315 81} box PLASTIC_UP_FRAME align 5
+    protected xywh {335 297 315 81} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Choice mPreviewBorder {
       label Border open
-      protected tooltip {Shows a solid border around the preview to ease cropping} xywh {398 283 136 25} down_box BORDER_BOX
+      protected tooltip {Shows a solid border around the preview to ease cropping} xywh {398 308 136 25} down_box BORDER_BOX
     } {}
     Fl_Check_Button mZoomIn {
       label Enlarge
-      protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {548 320 80 25} down_box DOWN_BOX
+      protected tooltip {If enabled, the preview will be enlarged, rather than shrinked, by the specified factor} xywh {548 345 80 25} down_box DOWN_BOX
     }
     Fl_Value_Slider mZoomMultiplier {
       label Zoom
-      protected xywh {398 320 136 25} type Horizontal align 4 minimum 1 maximum 10 step 0.1 value 1
+      protected xywh {398 345 136 25} type Horizontal align 4 minimum 1 maximum 10 step 0.1 value 1
     }
   }
   Fl_Box mAboveFg {
-    protected xywh {5 360 25 5}
+    protected xywh {5 385 25 5}
   }
   Fl_Group {} {
     label Filtergraph
-    protected xywh {5 385 645 280} box PLASTIC_UP_FRAME align 5
+    protected xywh {5 410 645 280} box PLASTIC_UP_FRAME align 5
   } {
     Fl_Text_Editor mFgSource {
       label Source
-      protected xywh {15 412 625 85} align 5
+      protected xywh {15 437 625 85} align 5
       code0 {mFgSource->buffer(new Fl_Text_Buffer);}
     }
     Fl_Text_Display mFgFilter {
       label Filter
-      protected xywh {15 568 625 85} align 5
+      protected xywh {15 593 625 85} align 5
       code0 {mFgFilter->buffer(new Fl_Text_Buffer);}
     }
     Fl_Button mMakeDefaultFg {
       label {Make default}
-      xywh {15 506 125 25}
+      xywh {15 531 125 25}
     }
   }
 }

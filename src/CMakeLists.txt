@@ -31,7 +31,7 @@ if (NOT FLTK_FOUND)
     message(FATAL_ERROR "FLTK was not found")
 endif()
 
-fltk_wrap_ui(miniresizer preview.fld resize.fld)
+fltk_wrap_ui(miniresizer preview.fld resize.fld about.fld)
 
 # The package name must be in CamelCase, becuase it is used to name the FLTK
 # preference file, and until now it was typed that way.

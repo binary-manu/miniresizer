@@ -3,6 +3,7 @@
 #include "./config.h"
 
 #include "ResizeWindow.hpp"
+#include "AboutWindow.hpp"
 
 #ifdef HAVE_WORDEXP_H
 # include <wordexp.h>
@@ -138,6 +139,8 @@ ResizeWindow::ResizeWindow():
     mTargetWidth->callback(&handleTargetWidthChange, this);
     mWSnap->callback(&handleWSnapChange, this);
     mHSnap->callback(&genericHandler, this);
+    mMenuFileQuit->callback(&handleClose, this);
+    mMenuHelpAbout->callback(&handleAbout, this);
 
 #ifdef ENABLE_FILTERGRAPH
     mMakeDefaultFg->callback(&saveFiltergraph, this);
@@ -303,6 +306,12 @@ void ResizeWindow::genericHandler(Fl_Widget */* w */, void *_p) {
 void ResizeWindow::handleClose(Fl_Widget * /*w */, void *_p) {
     ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
     p->mOnResize->Close(p);
+}
+
+void ResizeWindow::handleAbout(Fl_Widget * /*w */, void *_p) {
+    static AboutWindow *about { new AboutWindow() };
+    about->set_modal();
+    about->show();
 }
 
 void ResizeWindow::evaluate(bool doCallback) {
