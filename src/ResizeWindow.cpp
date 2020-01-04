@@ -112,7 +112,7 @@ FrameSize ResizeWindow::GetResizedHeight() const {
 ResizeWindow::ResizeWindow():
     mOnResize(nullptr)
 {
-    label(PACKAGE_STRING);
+    label(PACKAGE_NAME);
 
     callback(handleClose, this);
     mDarChoice->add("As input");
