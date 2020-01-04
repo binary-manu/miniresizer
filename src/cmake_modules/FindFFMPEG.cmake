@@ -40,7 +40,7 @@ function(consume_component comp)
         quiet_message(STATUS "Looking for ${comp} header")
         # ffmpeg Nux builds for CentOS place FFMPEG headers under an additional ffmpeg directory
         find_path(FFMPEG_${comp}_H NAMES ${comp}.h
-            PATHS ENV FFMPEG_HEADER_PATH PATH_SUFFIXES lib${comp}
+            PATHS ENV FFMPEG_INCLUDE_PATH PATH_SUFFIXES lib${comp}
                 ffmpeg/lib${comp} # For CentOS
         )
         if (FFMPEG_${comp}_H)
