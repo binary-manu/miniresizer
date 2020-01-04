@@ -17,8 +17,11 @@ public:
             "Released under the <a href='https://choosealicense.com/licenses/mit'>MIT license</a></p>"
             "<p>Third party products used:"
             "<ul>"
-              "<li><a href='https://www.fltk.org'>FLTK</a></li>"
-              "<li><a href='https://ffmpeg.org'>ffmpeg</a></li>"
+              "<li>This program is based in part on the work of the FLTK project "
+                "(<a href='https://www.fltk.org'>http://www.fltk.org</a>)</li>"
+              "<li>This software uses libraries from the "
+                "<a href='https://ffmpeg.org'>FFmpeg</a> project under the "
+                "<a href=http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>LGPLv2.1</a></li>"
               "<li>Icon made by Pixelmeetup from <a href='https://www.flaticon.com'>www.flaticon.com</a></li>"
             "</ul></p>"
         );
