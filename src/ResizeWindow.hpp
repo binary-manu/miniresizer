@@ -115,6 +115,9 @@ private:
 
     template <typename T> void putInEnv(const char * const name, const T& value);
     void expandVar(std::string& varName, std::string& appendHere);
+#if defined(HAVE_WORDEXP_H)
+    static
+#endif
     bool expandHelper(const std::string& filter, std::string& expansion);
 
     Environment mVars;

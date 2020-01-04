@@ -308,7 +308,7 @@ void ResizeWindow::handleClose(Fl_Widget * /*w */, void *_p) {
     p->mOnResize->Close(p);
 }
 
-void ResizeWindow::handleAbout(Fl_Widget * /*w */, void *_p) {
+void ResizeWindow::handleAbout(Fl_Widget * /*w */, void * /* _p */) {
     static AboutWindow *about { new AboutWindow() };
     about->set_modal();
     about->show();
