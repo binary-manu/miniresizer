@@ -2,6 +2,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 
+include(BuildType)
 include(CheckIncludeFileCXX)
 include(GNUInstallDirs)
 include(Options)
