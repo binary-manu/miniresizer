@@ -8,9 +8,11 @@ include(Options)
 
 option_add_list(ENABLE_FILTERGRAPH "Enable filtergraph expansion" "wordexp" "none;wordexp;builtin")
 
+set(REAL_FILTERGRAPH "${OPTION_ENABLE_FILTERGRAPH}")
+
 if(NOT "${OPTION_ENABLE_FILTERGRAPH}" STREQUAL "none")
+    # This variable gets replaced into config.h.in
     set(ENABLE_FILTERGRAPH 1)
-    set(REAL_FILTERGRAPH "${OPTION_ENABLE_FILTERGRAPH}")
 endif()
 
 if("${OPTION_ENABLE_FILTERGRAPH}" STREQUAL "wordexp")
