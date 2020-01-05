@@ -32,4 +32,8 @@ FrameSize nearestInteger(Ratio d);
 FrameSize nearestMultiple(FrameSize i, FrameSize step);
 FrameSize snapSize(FrameSize size, FrameSize snap);
 
+// FLTK preferences
+const char * const FLTK_PREFS_GROUP_DEFAULT { "default" };
+const char * const FLTK_PREFS_DEFAULT_FILTERGRAPH { "filtergraph" };
+
 #endif // COMMON_HPP

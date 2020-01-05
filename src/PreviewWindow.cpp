@@ -81,14 +81,14 @@ void PreviewWindow::DrawPicture(const uint8_t* rgb, FrameSize w_, FrameSize h_) 
 }
 
 void PreviewWindow::draw() {
-    const int d = damage();
+    const auto d = damage();
     int x = 0;
     int y = 0;
     if (!mPictureData.empty() && ((d & FL_DAMAGE_ALL) || (d & FL_DAMAGE_EXPOSE))) {
         if (mHasBorder) {
-            int r = static_cast<int>(mBorderColor / (256 * 256 * 256) % 256);
-            int g = static_cast<int>(mBorderColor / (256 * 256) % 256);
-            int b = static_cast<int>(mBorderColor / (256) % 256);
+            auto r = static_cast<int>(mBorderColor / 256 / 256 / 256 % 256);
+            auto g = static_cast<int>(mBorderColor / 256 / 256 % 256);
+            auto b = static_cast<int>(mBorderColor / 256 % 256);
             fl_rectf(0, 0, BORDER_SIZE, BORDER_SIZE * 2 + mPictureH, r, g, b);  // Left border
             fl_rectf(w() - BORDER_SIZE, 0, BORDER_SIZE, BORDER_SIZE * 2 + mPictureH, r, g, b);  // Right border
             fl_rectf(0, 0, w(), BORDER_SIZE, r, g, b);  // Top border

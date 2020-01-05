@@ -126,7 +126,7 @@ ResizeWindow::ResizeWindow():
     mPreviewBorder->add("White");
     mPreviewBorder->value(0);
 
-    mDarChoice->callback(&handleDARSelection, this);
+    mDarChoice->callback(&genericHandler, this);
     mPreviewBorder->callback(&genericHandler, this);
     mZoomMultiplier->callback(&genericHandler, this);
     mZoomIn->callback(&genericHandler, this);
@@ -145,9 +145,9 @@ ResizeWindow::ResizeWindow():
 #ifdef ENABLE_FILTERGRAPH
     mMakeDefaultFg->callback(&saveFiltergraph, this);
     Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
-    Fl_Preferences defaultGroup(prefs, "default");
+    Fl_Preferences defaultGroup(prefs, FLTK_PREFS_GROUP_DEFAULT);
     char *fg {nullptr};
-    defaultGroup.get("filtergraph", fg, "");
+    defaultGroup.get(FLTK_PREFS_DEFAULT_FILTERGRAPH, fg, "");
     std::unique_ptr<char, typeof(&free)> pfg {fg, &free};
     if (!pfg) {
         throw ResourceAllocationException("Unable to allocate space for reading the settings");
@@ -184,12 +184,6 @@ void ResizeWindow::enforceCropConstaints(Fl_Spinner *w, FrameSize limit, FrameSi
         crop = 0;
     }
     w->value(cropConstaints(crop, limit, step));
-}
-
-
-void ResizeWindow::handleDARSelection(Fl_Widget * /* dar */, void *_p) {
-    ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
-    p->evaluate();
 }
 
 void ResizeWindow::handleCropAlignChange(Fl_Widget * /* dar */, void *_p) {
@@ -514,14 +508,14 @@ void ResizeWindow::expandFiltergraph() {
 
 void ResizeWindow::saveFiltergraph(Fl_Widget * /*w*/, void *_p) {
     Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
-    Fl_Preferences defaultGroup(prefs, "default");
+    Fl_Preferences defaultGroup(prefs, FLTK_PREFS_GROUP_DEFAULT);
     std::unique_ptr<char, typeof(&free)> fg {
         static_cast<ResizeWindow*>(_p)->mFgSource->buffer()->text(), &free
     };
     if (!fg) {
         throw ResourceAllocationException("Memory allocation failed");
     }
-    defaultGroup.set("filtergraph", fg.get());
+    defaultGroup.set(FLTK_PREFS_DEFAULT_FILTERGRAPH, fg.get());
 }
 
 #endif

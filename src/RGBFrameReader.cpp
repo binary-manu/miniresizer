@@ -148,7 +148,6 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
     pkt.size = 0;
 
     do {
-#ifdef FFMPEG_USE_NEW_AVCODEC_API
         int what = av_read_frame(mFormatCtx, &pkt);
         if (what < 0) {
             if (what == AVERROR_EOF) {
@@ -156,14 +155,15 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
             }
             throw AVException("AV frame read error");
         }
+
+#ifdef FFMPEG_USE_NEW_AVCODEC_API
+        std::unique_ptr<AVPacket, typeof(&av_packet_unref)> ppkt {&pkt, &av_packet_unref};
+
         if (pkt.stream_index != mVideoStream->index) {
-            av_packet_unref(&pkt);
             continue;
         }
 
-        int got;
         what = avcodec_send_packet(mCodecCtx, &pkt);
-        av_packet_unref(&pkt);
         if (what < 0) {
             throw AVException("AV frame decode error");
         }
@@ -175,14 +175,8 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
             throw AVException("AV frame decode error");
         }
 #else
-        int what = av_read_frame(mFormatCtx, &pkt);
-        if (what < 0) {
-            if (what == AVERROR_EOF) {
-                return DR_EOF;
-            }
-            throw AVException("AV frame read error");
-        }
         std::unique_ptr<AVPacket, typeof(&av_free_packet)> ppkt {&pkt, &av_free_packet};
+
         if (pkt.stream_index != mVideoStream->index) {
             continue;
         }

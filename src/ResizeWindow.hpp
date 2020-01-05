@@ -77,7 +77,6 @@ private:
 
     static FrameSize cropConstaints(FrameSize crop, FrameSize limit, FrameSize step);
     static void enforceCropConstaints(Fl_Spinner *w, FrameSize limit, FrameSize step);
-    static void handleDARSelection(Fl_Widget *dar, void *_p);
     static void handleCropAlignChange(Fl_Widget *dar, void *_p);
     static void handleCropLeftChange(Fl_Widget *w, void *_p);
     static void handleCropRightChange(Fl_Widget *w, void *_p);
