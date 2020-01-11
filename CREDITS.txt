@@ -2,3 +2,4 @@ This program is based in part on the work of the FLTK project (http://www.fltk.o
 This software uses libraries from the FFmpeg project under the LGPLv2.1
 Icon made by Pixelmeetup from www.flaticon.com
 Snippets of the build system come from https://blog.kitware.com
+Free Stock footage by Videezy! (http://videezy.com)
