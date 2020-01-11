@@ -19,6 +19,7 @@ endif()
 if("${OPTION_ENABLE_FILTERGRAPH}" STREQUAL "wordexp")
     CHECK_INCLUDE_FILE_CXX("wordexp.h" HAVE_WORDEXP_H)
     if (NOT HAVE_WORDEXP_H)
+        message(NOTICE "wordexp support is not available, falling back on builtin filtergraph expansion")
         set(REAL_FILTERGRAPH "builtin")
     endif()
 endif()
@@ -90,10 +91,4 @@ endif()
 
 install(TARGETS miniresizer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-message("
-=====================================================
-    Configuration summary:
-
-    Filtegraph expansion: ${REAL_FILTERGRAPH}
-=====================================================
-")
+message(STATUS "Filtergraph implementation selected: ${REAL_FILTERGRAPH}")
