@@ -189,7 +189,8 @@ void ResizeWindow::enforceCropConstaints(Fl_Spinner *w, FrameSize limit, FrameSi
 void ResizeWindow::handleCropAlignChange(Fl_Widget * /* dar */, void *_p) {
     ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
 
-    auto align = FrameSize(p->mCropAlign->value());
+    auto align = FrameSize(std::max(p->mCropAlign->value(), Ratio(1)));
+    p->mCropAlign->value(align);
 
     enforceCropConstaints(
         p->mCropLeft,
@@ -278,22 +279,38 @@ void ResizeWindow::handleDARTyping(Fl_Widget * /*w */, void *_p) {
 
 void ResizeWindow::handleTargetWidthChange(Fl_Widget * /*w */, void *_p) {
     ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
-    if (p->mTargetWidth->value() < p->mTargetWidth->step()) {
-        p->mTargetWidth->value(p->mTargetWidth->step());
+    auto targetWidth = p->mTargetWidth->value();
+    auto step = p->mTargetWidth->step();
+    if (targetWidth < p->mTargetWidth->step()) {
+        targetWidth = step;
     }
+    p->mTargetWidth->value(nearestMultiple(targetWidth, step));
     p->evaluate();
 }
 
 void ResizeWindow::handleWSnapChange(Fl_Widget * /* w */, void *_p) {
     ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
-    const FrameSize snap = p->mWSnap->value();
+    const auto snap = FrameSize(std::max(p->mWSnap->value(), Ratio(1)));
+    p->mWSnap->value(snap);
     p->mTargetWidth->step(snap);
     p->mTargetWidth->value(snapSize(p->mTargetWidth->value(), snap));
     p->evaluate();
 }
 
-void ResizeWindow::genericHandler(Fl_Widget */* w */, void *_p) {
+void ResizeWindow::genericHandler(Fl_Widget * w, void *_p) {
     ResizeWindow *p = (static_cast<ResizeWindow*>(_p));
+    auto valuator = dynamic_cast<Fl_Valuator*>(w);
+    if (valuator) {
+        const auto min = valuator->minimum();
+        const auto max = valuator->maximum();
+        auto val = valuator->value();
+        if (val < min) {
+            val = min;
+        } else if (max < val) {
+            val = max;
+        }
+        valuator->value(val);
+    }
     p->evaluate();
 }
 
