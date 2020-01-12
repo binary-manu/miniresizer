@@ -148,7 +148,7 @@ ResizeWindow::ResizeWindow():
     Fl_Preferences defaultGroup(prefs, FLTK_PREFS_GROUP_DEFAULT);
     char *fg {nullptr};
     defaultGroup.get(FLTK_PREFS_DEFAULT_FILTERGRAPH, fg, "");
-    std::unique_ptr<char, typeof(&free)> pfg {fg, &free};
+    std::unique_ptr<char, decltype(&free)> pfg {fg, &free};
     if (!pfg) {
         throw ResourceAllocationException("Unable to allocate space for reading the settings");
     }
@@ -474,10 +474,10 @@ bool ResizeWindow::expandHelper(const std::string& filter, std::string& expansio
     filterSource += filter;
     filterSource.push_back('\u0022');
     const int weNok = wordexp(filterSource.c_str(), &we, 0);
-    std::unique_ptr<wordexp_t, typeof(&wordfree)> pwe {&we, &wordfree};
     if (weNok || we.we_wordc != 1) {
         return false;
     }
+    std::unique_ptr<wordexp_t, decltype(&wordfree)> pwe {&we, &wordfree};
 
     expansion = we.we_wordv[0];
     return true;
@@ -507,7 +507,7 @@ void ResizeWindow::expandFiltergraph() {
     const int filterLength = mFgSource->buffer()->length();
     std::string filter;
     filter.reserve(filterLength);
-    std::unique_ptr<char, typeof(&free)> filterC {mFgSource->buffer()->text(), &free};
+    std::unique_ptr<char, decltype(&free)> filterC {mFgSource->buffer()->text(), &free};
     if (!filterC) {
         throw ResourceAllocationException("Unable to get filtergraph source in textual form for processing");
     }
@@ -526,7 +526,7 @@ void ResizeWindow::expandFiltergraph() {
 void ResizeWindow::saveFiltergraph(Fl_Widget * /*w*/, void *_p) {
     Fl_Preferences prefs(Fl_Preferences::USER, "", PACKAGE_NAME);
     Fl_Preferences defaultGroup(prefs, FLTK_PREFS_GROUP_DEFAULT);
-    std::unique_ptr<char, typeof(&free)> fg {
+    std::unique_ptr<char, decltype(&free)> fg {
         static_cast<ResizeWindow*>(_p)->mFgSource->buffer()->text(), &free
     };
     if (!fg) {
