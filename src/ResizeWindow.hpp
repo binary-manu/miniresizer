@@ -105,7 +105,8 @@ private:
         const std::string get(const std::string& name) {
             VarsType::const_iterator item = mVars.find(name);
             if (item == mVars.end()) {
-                return getenv(name.c_str());
+                const auto varFromEnv = getenv(name.c_str());
+                return (varFromEnv) ? varFromEnv : "";
             } else {
                 return item->second;
             }
