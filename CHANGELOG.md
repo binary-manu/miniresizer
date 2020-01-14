@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   compressors, but more recent compressors can work with sizes that are multiple
   of smaller values.
 * Add proper licensing information.
+* Add an About dialog.
 
 ### Changed
 
@@ -28,11 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-* Should compile with any version of `ffmpeg` from 2.8 to 4.x. Some API's have
-  been deprecated or removed during `ffmpeg`'s lifecycle, but old versions are
+* Should compile with any version of FFmpeg from 2.8 to 4.x. Some API's have
+  been deprecated or removed during FFmpeg's lifecycle, but old versions are
   still found in the wild (i.e. CentOS 7). As far as feasible, the code should
   compile against all of them. Some deprecation warnings may appear while
   building due to the way feature checks are written.
+* Fix crashes caused by some numeric controls being allowed to take
+  non-positive values.
+* Fix crashes caused by undefined variables in filtergraphs when using the
+  builtin implementation.
 
 ## [0.0.8] - 2017-09-24
 
@@ -67,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * The file to open can be passed on the command line as the only argument.
 * Add _filtergraph expansion_, a.k.a. replacing computed values for the image
   width, height and other values into user provided contents. This is mainly
-  used to produce ffmpeg filtergraphs with actual values from a template, hence
+  used to produce FFmpeg filtergraphs with actual values from a template, hence
   the name of this feature. This feature uses `wordexp(3)` to perform expansion
   and thus is not available in Windows builds.
 
