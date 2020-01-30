@@ -1,5 +1,14 @@
 # MiniResizer, a simple video crop and resize tool
 
+|       `travis`         |        `master`        |
+|:----------------------:|:----------------------:|
+| [![][ci_travis]][repo] | [![][ci_master]][repo] |
+
+[ci_travis]: https://travis-ci.com/binary-manu/miniresizer.svg?branch=travis
+[ci_master]: https://travis-ci.com/binary-manu/miniresizer.svg?branch=master
+[repo]:      https://travis-ci.com/binary-manu/miniresizer
+
+
 MiniResizer is a simple graphical utility that helps you to calculate
 crop and resize parameters when doing video editing.
 
