@@ -33,9 +33,9 @@ deploy:
   - on:
       branch: master
       condition: '"$TRAVIS_EVENT_TYPE" != "cron"'
+      tags: true
     provider: releases
     file: build-appimage/MiniResizer-x86_64.AppImage 
     skip_cleanup: true
     api_key:
       secure: "Cy4GRlQyonSNmJvDsaBqHzdG5Hxyg8aySpJn08uxAVirWSeBw3Y3dzJKfEORIkdHREO603n/myGEMrKpV5VXaOmwGmFux34FbNg/pvRsqiDdfWJn27Vnv17PRLIvTGYly0/mw1OHR6yFs8QMApCuMccGapXzHhBs9mxcyJbnezyvQZKQf0GmoeM6b0CSmqIRtBREHJLi+GIh0bgnFYHSbNX0/hd+sbzlZjtcHu5kg+PIihdxyz7oFyHOOxrCi5lgmEpvGyAwwAFv+n33hb1JY2B4QDE67TIK+5DPHUYZ9EeuiIg61U74R9tdNhJpP0Mm86K/j+eyAEM/YvxAWFIEEtQW6aFtxqhqBdcQZOkY63hMrgbsBNF58WkM6WqenurhF8fVAWS+e04NIVdM5IBzf0O6TQTgiZIFhvkYU9IGm8aLzDeqqHcpJs5HMkoex3+9UljIbmesXTiFhlak/LRYrsTJTdXxy6gbBVLNaqWuO0luQRq6jY9ecEu4aIUNHBfCBQ3daGlzo/4axy5fdGrq9hzTwMn8wRjaFgk1/gyBeJ0/UzTWWThECBPbZ362+pFHZOcv6hDbE2aIcZxJRBF5wRf3OwQzVxl7BkSakcYtYW2BFay3RiugU8PAKtA3HS10p/SpatoAqo/bhXX+aq8AuzZ1ErqwBcVyQ4nPpJoYV0I="
-    tags: true
