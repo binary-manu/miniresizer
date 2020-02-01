@@ -25,17 +25,17 @@ script:
 
 after_success:
   - >-
-    [ "$TRAVIS_BRANCH" = "travis" ] &&
+    [ "$TRAVIS_BRANCH" = "travis" -a "$TRAVIS_EVENT_TYPE" != "cron" ] &&
     wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh &&
     bash upload.sh build-appimage/MiniResizer-x86_64.AppImage
 
 deploy:
   - on:
-        branch: master
-        condition: '$(uname -m) == x86_64'
+      branch: master
+      condition: '"$TRAVIS_EVENT_TYPE" != "cron"'
     provider: releases
     file: build-appimage/MiniResizer-x86_64.AppImage 
     skip_cleanup: true
     api_key:
-      secure: "3VobeAuLBRAjv2EG4jdIX7GKSm90ys1Bvf5B1GOj7PBpYqDa3E/YEcLHHhOaH9cGB2Y1f/cYNPyNflM6uHLjaM1u5VyaRvljQRS/zKXvgJRR9wwdasB5o+occBLao6LqDJQhgnmRC8bDDrFori+BwDQD76Z252JpRPrncGTTWE5yALVyPMP66FKK8sQjJ/1hBBsCss+Tof0mvDkYny7LDpoW1oaadxta8l4nwdz4PIgVX/0blDtcst9wdrOPVu+2qgpRhq2kGtvgw34GG0WfRvRooamjqunTOuWckBt0CHjdSZNoNoqYd9tz/+VYdp84ChU8KMO2MPBUYzaGyIwoIGewcfsNbWAduSgrUtUWQrC1RZbywbwHWfbCcxp4r8Kn5HcbbDkq3ezPLnzX2pZxVU/GtVMLn7p/BL5kWzbabGoEU6rNwmsVLgEbAksMNqQT8iuRkyXy7f88bgidSRPYzTpzZLxgntIuZZeh6XWN9cjxt7/zUe/j1RnZ4vtO4jC5msjr8x6EIf5GiiWK3jrDdLhka9uKrtyiXmWf701yqDZxFY1paMy4PQ5qzVBHhsDY4wL7ajpFUPUsjUZ3tlNFvPM7vwy9lx6gHUaRPuSi2EVfmjn6H8wlIqpL3iO1vojVNx0pRVH+WNfw9r+9D4SrDA6WIdlY1LzDy3lzORZ6fpg="
+      secure: "Cy4GRlQyonSNmJvDsaBqHzdG5Hxyg8aySpJn08uxAVirWSeBw3Y3dzJKfEORIkdHREO603n/myGEMrKpV5VXaOmwGmFux34FbNg/pvRsqiDdfWJn27Vnv17PRLIvTGYly0/mw1OHR6yFs8QMApCuMccGapXzHhBs9mxcyJbnezyvQZKQf0GmoeM6b0CSmqIRtBREHJLi+GIh0bgnFYHSbNX0/hd+sbzlZjtcHu5kg+PIihdxyz7oFyHOOxrCi5lgmEpvGyAwwAFv+n33hb1JY2B4QDE67TIK+5DPHUYZ9EeuiIg61U74R9tdNhJpP0Mm86K/j+eyAEM/YvxAWFIEEtQW6aFtxqhqBdcQZOkY63hMrgbsBNF58WkM6WqenurhF8fVAWS+e04NIVdM5IBzf0O6TQTgiZIFhvkYU9IGm8aLzDeqqHcpJs5HMkoex3+9UljIbmesXTiFhlak/LRYrsTJTdXxy6gbBVLNaqWuO0luQRq6jY9ecEu4aIUNHBfCBQ3daGlzo/4axy5fdGrq9hzTwMn8wRjaFgk1/gyBeJ0/UzTWWThECBPbZ362+pFHZOcv6hDbE2aIcZxJRBF5wRf3OwQzVxl7BkSakcYtYW2BFay3RiugU8PAKtA3HS10p/SpatoAqo/bhXX+aq8AuzZ1ErqwBcVyQ4nPpJoYV0I="
     tags: true
