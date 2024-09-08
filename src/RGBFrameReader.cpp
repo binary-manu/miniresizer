@@ -169,7 +169,10 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
         }
         what = avcodec_receive_frame(mCodecCtx, mFrame);
         if (what == 0) {
-            break;
+            if (mFrame->key_frame) {
+                break;
+            }
+            continue;
         }
         if (what != AVERROR(EAGAIN)) {
             throw AVException("AV frame decode error");
@@ -186,7 +189,7 @@ RGBFrameReader::DecodeResult RGBFrameReader::decodeFrame() {
         if (what < 0) {
             throw AVException("AV frame decode error");
         }
-        if (got) {
+        if (got && mFrame->key_frame) {
             break;
         }
 #endif
