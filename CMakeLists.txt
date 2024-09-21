@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.3)
 project(
     miniresizer
     DESCRIPTION "Calculate video crop/resize parameters"
-    VERSION 0.1.0
+    VERSION 0.1.1
     LANGUAGES C CXX
 )
 
