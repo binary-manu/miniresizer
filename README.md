@@ -1,14 +1,5 @@
 # MiniResizer, a simple video crop and resize tool
 
-|       `travis`         |        `master`        |
-|:----------------------:|:----------------------:|
-| [![][ci_travis]][repo] | [![][ci_master]][repo] |
-
-[ci_travis]: https://travis-ci.com/binary-manu/miniresizer.svg?branch=travis
-[ci_master]: https://travis-ci.com/binary-manu/miniresizer.svg?branch=master
-[repo]:      https://travis-ci.com/binary-manu/miniresizer
-
-
 MiniResizer is a simple graphical utility that helps you to calculate
 crop and resize parameters when doing video editing.
 
@@ -31,7 +22,7 @@ MiniResizer is written in C++11 and uses cross-platform libraries to do
 its job, so it can be easily ported to different systems.
 
 Currently, it has been tested under some Linux distributions, namely
-Ubuntu (18.04 and 16.04), CentOS 7 and Arch Linux.
+Ubuntu and Arch Linux.
 
 It is possible to compile it for Microsoft Windows, but since it is not
 my system of choice, I only test cross-builds produced under Linux with
@@ -301,7 +292,7 @@ You will need a C++11 compiler, as well as the following
 dependencies:
 
 * FLTK 1.3.x
-* FFmpeg, either version 4.x, 3.x or 2.8
+* FFmpeg >= 2.8
 
 If the build system cannot find headers and libraries under the common
 paths on your system, use the `CMAKE_LIBRARY_PATH` and
