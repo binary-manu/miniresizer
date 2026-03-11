@@ -1,3 +1,5 @@
+⚠️ **Migrated to https://codeberg.org/binary-manu/miniresizer** ⚠️
+
 # MiniResizer, a simple video crop and resize tool
 
 MiniResizer is a simple graphical utility that helps you to calculate
